@@ -1,0 +1,2289 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistem e-Muster Chit & Pergerakan Jentera Ladang FGVPM</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Spreadsheet Table Styling */
+    .excel-table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 11.5px;
+      line-height: 1.25;
+      background: #ffffff;
+    }
+    .excel-table th,
+    .excel-table td {
+      border: 1px solid #475569;
+      padding: 3px 5px;
+      vertical-align: middle;
+    }
+    .excel-table thead th {
+      background-color: #1e3a2f;
+      color: #ffffff;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.01em;
+    }
+    .excel-table thead tr.sub-header-1 th {
+      background-color: #2d5a47;
+      color: #f8fafc;
+    }
+    .excel-table thead tr.sub-header-2 th {
+      background-color: #dcfce7;
+      color: #14532d;
+      font-size: 10.5px;
+    }
+    .cell-input {
+      width: 100%;
+      min-width: 34px;
+      text-align: center;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      padding: 1px 2px;
+      font-weight: 600;
+      color: #0f172a;
+      font-size: 11.5px;
+      transition: all 0.12s ease;
+    }
+    .cell-input:hover {
+      background-color: #f8fafc;
+      border-color: #cbd5e1;
+    }
+    .cell-input:focus {
+      outline: none;
+      background-color: #fef9c3;
+      border-color: #16a34a;
+      box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+    }
+    .cell-input-blok {
+      color: #1d4ed8;
+      font-weight: 600;
+      background-color: rgba(239, 246, 255, 0.45);
+    }
+    .header-edit-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px dashed rgba(255, 255, 255, 0.35);
+      color: inherit;
+      text-align: center;
+      font-weight: 700;
+      font-size: 11px;
+      border-radius: 3px;
+      padding: 1px 3px;
+    }
+    .header-edit-input:focus {
+      outline: none;
+      background: #ffffff;
+      color: #0f172a;
+      border-color: #16a34a;
+    }
+
+    /* Row Highlights */
+    .row-section-banner td {
+      background-color: #14532d;
+      color: #ffffff;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 5px 8px;
+    }
+    .row-cat-header td {
+      background-color: #e2e8f0;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .row-grand-total td {
+      background-color: #fde047;
+      font-weight: 800;
+      color: #0f172a;
+      border-top: 2px solid #1e293b;
+      border-bottom: 2px solid #1e293b;
+    }
+    .row-sub-total td {
+      background-color: #bbf7d0;
+      font-weight: 800;
+      color: #14532d;
+      border-top: 1.5px solid #1e293b;
+      border-bottom: 1.5px solid #1e293b;
+    }
+    .row-absent-total td {
+      background-color: #fecaca;
+      font-weight: 800;
+      color: #7f1d1d;
+      border-top: 1.5px solid #1e293b;
+      border-bottom: 1.5px solid #1e293b;
+    }
+    .col-jum-besar {
+      background-color: #f0fdf4;
+      font-weight: 700;
+    }
+
+    /* Screenshot Clean Mode */
+    body.screenshot-mode {
+      background-color: #ffffff !important;
+    }
+    body.screenshot-mode .no-screenshot {
+      display: none !important;
+    }
+    body.screenshot-mode #ScreenshotBanner {
+      display: flex !important;
+    }
+    body.screenshot-mode #CaptureArea {
+      box-shadow: none !important;
+      border: none !important;
+      margin: 0 auto !important;
+      padding: 12px !important;
+    }
+    body.screenshot-mode .cell-input,
+    body.screenshot-mode .header-edit-input {
+      border-color: transparent !important;
+      background: transparent !important;
+    }
+
+    /* Print Styling */
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 6mm;
+      }
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      #CaptureArea {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        transform: none !important;
+      }
+      .excel-table {
+        font-size: 9.5px !important;
+        line-height: 1.15 !important;
+      }
+      .excel-table th,
+      .excel-table td {
+        padding: 1.5px 3px !important;
+        border: 1px solid #000000 !important;
+      }
+      .cell-input,
+      .header-edit-input {
+        font-size: 9.5px !important;
+        padding: 0 !important;
+        border: none !important;
+        background: transparent !important;
+      }
+      .page-break-before {
+        page-break-before: always;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Floating Bar when in Clean Screenshot Mode -->
+  <div id="ScreenshotBanner" class="hidden sticky top-0 z-50 bg-slate-900/95 text-white px-4 py-2.5 items-center justify-between gap-3 text-xs shadow-lg no-print">
+    <div class="flex items-center gap-2">
+      <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span class="font-semibold">Mod Paparan Tangkap Skrin (Screenshot) Aktif</span>
+      <span class="text-slate-300 hidden sm:inline">— Anda boleh terus ambil screenshot pada telefon/PC atau muat turun imej PNG.</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <label class="text-slate-300 flex items-center gap-1">
+        Skala:
+        <select id="ZoomSelect" class="bg-slate-800 text-white border border-slate-600 rounded px-2 py-1 text-xs">
+          <option value="1">100%</option>
+          <option value="0.9">90%</option>
+          <option value="0.8">80%</option>
+          <option value="0.7">70% (Muat 1 Skrin)</option>
+        </select>
+      </label>
+      <button type="button" id="BtnDownloadPngFromBanner" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-3 py-1 rounded transition">
+        Muat Turun PNG
+      </button>
+      <button type="button" id="BtnExitScreenshotMode" class="bg-rose-600 hover:bg-rose-500 text-white font-semibold px-3 py-1 rounded transition">
+        Kembali ke Mod Edit
+      </button>
+    </div>
+  </div>
+
+  <!-- Top Navigation & Action Toolbar -->
+  <header class="bg-emerald-950 text-white shadow-md no-print no-screenshot">
+    <div class="max-w-[1440px] mx-auto px-3 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-emerald-700 flex items-center justify-center font-extrabold text-lg tracking-tighter shadow-inner border border-emerald-500/40">
+          FGV
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight leading-snug">Sistem e-Muster Chit & Pergerakan Jentera Ladang</h1>
+          <p class="text-xs text-emerald-200/90">Pengisian Data Harian, Pengumpulan Rekod Automatik (Gaya Excel), Cetak & Tangkap Skrin</p>
+        </div>
+      </div>
+
+      <!-- Primary Action Buttons -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button type="button" id="BtnSaveRecord" class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-2 rounded-lg shadow transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          <span>Simpan Rekod Harian</span>
+        </button>
+
+        <button type="button" id="BtnScreenshotMode" class="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-3 py-2 rounded-lg shadow transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3"/></svg>
+          <span>Mod Tangkap Skrin</span>
+        </button>
+
+        <button type="button" id="BtnDownloadPng" class="inline-flex items-center gap-1.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold px-3 py-2 rounded-lg shadow transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <span>Simpan Imej (PNG)</span>
+        </button>
+
+        <button type="button" id="BtnPrint" class="inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold px-3 py-2 rounded-lg shadow transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+          <span>Cetak / Simpan PDF</span>
+        </button>
+
+        <button type="button" id="BtnExportCsv" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-600 text-xs font-semibold px-3 py-2 rounded-lg transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span>Eksport CSV (Excel)</span>
+        </button>
+
+        <button type="button" id="BtnDownloadHtml" class="inline-flex items-center gap-1.5 bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold px-3 py-2 rounded-lg shadow transition" title="Muat turun fail index.html untuk dimuat naik terus ke GitHub Pages (yatotet.github.io)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+          <span>Muat Turun index.html (GitHub)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Sub-toolbar: Tabs & Template Preset Loader -->
+    <div class="bg-emerald-900/90 border-t border-emerald-800">
+      <div class="max-w-[1440px] mx-auto px-3 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2">
+        <!-- View Tabs -->
+        <div class="flex flex-wrap items-center gap-1.5" role="tablist">
+          <button type="button" data-tab="muster" class="tab-btn bg-white text-emerald-950 font-bold text-xs px-3 py-1.5 rounded-md shadow-sm transition">
+            1. Borang Muster Chit
+          </button>
+          <button type="button" data-tab="jentera" class="tab-btn bg-emerald-800/70 hover:bg-emerald-800 text-emerald-100 font-semibold text-xs px-3 py-1.5 rounded-md transition">
+            2. Pergerakan Kenderaan / Jentera
+          </button>
+          <button type="button" data-tab="both" class="tab-btn bg-emerald-800/70 hover:bg-emerald-800 text-emerald-100 font-semibold text-xs px-3 py-1.5 rounded-md transition">
+            3. Paparan Penuh (Muster + Jentera)
+          </button>
+          <button type="button" data-tab="archive" class="tab-btn bg-emerald-800/70 hover:bg-emerald-800 text-emerald-100 font-semibold text-xs px-3 py-1.5 rounded-md transition flex items-center gap-1.5">
+            <span>4. Pengumpulan Data & Rekod Harian</span>
+            <span id="ArchiveCountBadge" class="bg-amber-400 text-slate-950 font-extrabold px-1.5 py-0.2 rounded-full text-[10px]">4</span>
+          </button>
+        </div>
+
+        <!-- Template & Quick Fill Controls -->
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <label class="flex items-center gap-1.5 text-emerald-100 font-medium">
+            <span>Pratetap / Lembaran Excel:</span>
+            <select id="PresetSelect" class="bg-emerald-950 text-white border border-emerald-600 rounded px-2 py-1 text-xs font-semibold">
+              <option value="aring03_weekday">1.MUSTERCHIT — Ladang Aring 03 (Hari Bekerja)</option>
+              <option value="aring03_weekend">hari minggu @ AM — Ladang Aring 03 (Cuti Minggu)</option>
+              <option value="lepar10_12jan">12.01.25 pekerja — Ladang Lepar Utara 10 (Ahad)</option>
+              <option value="lepar10_10jan">10.01.2025 — Ladang Lepar Utara 10 (Jumaat)</option>
+              <option value="blank_form">Borang Kosong Baru (Semua Nilai 0)</option>
+            </select>
+          </label>
+          <button type="button" id="BtnMatchHadirToAda" class="bg-emerald-700 hover:bg-emerald-600 text-white px-2.5 py-1 rounded font-semibold transition" title="Tetapkan semua nilai HADIR sama dengan nilai ADA bagi Operasi & Pentadbiran">
+            Set Hadir = Ada
+          </button>
+          <button type="button" id="BtnResetNumbers" class="bg-rose-800/80 hover:bg-rose-700 text-rose-100 px-2.5 py-1 rounded font-semibold transition" title="Kosongkan semua angka dalam jadual">
+            Kosongkan Angka
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Live KPI Summary Ribbon (Hidden in Print / Screenshot Clean Mode) -->
+  <section class="max-w-[1440px] w-full mx-auto px-3 sm:px-6 pt-3 no-print no-screenshot">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+      <div class="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+        <div class="text-[11px] font-semibold text-slate-500 uppercase">Jumlah Luas Ladang</div>
+        <div id="KpiTotalArea" class="text-lg font-extrabold text-slate-900 mt-0.5">1,521.70 HEK</div>
+        <div id="KpiAreaSub" class="text-[11px] text-emerald-700 font-medium">Berhasil: 1,343.23 HEK</div>
+      </div>
+      <div class="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+        <div class="text-[11px] font-semibold text-slate-500 uppercase">Pekerja Operasi (A)</div>
+        <div class="flex items-baseline gap-1.5 mt-0.5">
+          <span id="KpiOpHadir" class="text-lg font-extrabold text-emerald-700">101</span>
+          <span class="text-xs text-slate-400 font-semibold">/ <span id="KpiOpAda">107</span> orang</span>
+        </div>
+        <div id="KpiTuaiSub" class="text-[11px] text-slate-600 font-medium">Pungutan: 63/65 hadir</div>
+      </div>
+      <div class="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+        <div class="text-[11px] font-semibold text-slate-500 uppercase">Pentadbiran (B)</div>
+        <div class="flex items-baseline gap-1.5 mt-0.5">
+          <span id="KpiAdminHadir" class="text-lg font-extrabold text-blue-700">40</span>
+          <span class="text-xs text-slate-400 font-semibold">/ <span id="KpiAdminAda">41</span> orang</span>
+        </div>
+        <div class="text-[11px] text-slate-500 font-medium">Staf & Pemandu Operasi</div>
+      </div>
+      <div class="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+        <div class="text-[11px] font-semibold text-slate-500 uppercase">Jumlah Pekerja Hadir</div>
+        <div class="flex items-baseline gap-1.5 mt-0.5">
+          <span id="KpiTotalHadir" class="text-lg font-extrabold text-emerald-600">141</span>
+          <span class="text-xs text-slate-400 font-semibold">/ <span id="KpiTotalKeseluruhan">159</span> keseluruhan</span>
+        </div>
+        <div id="KpiAbsentSub" class="text-[11px] text-rose-600 font-semibold">Ketidakhadiran (C): 11</div>
+      </div>
+      <div class="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+        <div class="text-[11px] font-semibold text-slate-500 uppercase">Pencapaian Kehadiran</div>
+        <div id="KpiAttendancePct" class="text-lg font-extrabold text-amber-600 mt-0.5">88.68%</div>
+        <div class="w-full bg-slate-100 h-1.5 rounded-full mt-1.5 overflow-hidden">
+          <div id="KpiAttendanceBar" class="bg-emerald-600 h-full rounded-full transition-all duration-300" style="width: 88.68%"></div>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
+        <div class="text-[11px] font-semibold text-slate-500 uppercase">Hasil Tuai Semalam</div>
+        <div id="KpiTanTuai" class="text-lg font-extrabold text-slate-900 mt-0.5">84.69 TAN</div>
+        <div id="KpiTanPerHa" class="text-[11px] text-indigo-700 font-semibold">0.063 Tan/Ha • Backlog: 0.00</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Workspace Container -->
+  <main class="max-w-[1440px] w-full mx-auto px-2 sm:px-6 py-3 flex-1">
+
+    <!-- CAPTURE AREA FOR SCREENSHOT & PRINT -->
+    <div id="CaptureArea" class="bg-white rounded-xl shadow-sm border border-slate-300 p-3 sm:p-5 origin-top transition-transform">
+
+      <!-- ================= SECTION 1: MUSTER CHIT ================= -->
+      <div id="SectionMuster">
+        <!-- Official Document Header -->
+        <div class="border-b-2 border-slate-800 pb-3 mb-3">
+          <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-3">
+            <!-- Left: Company & Estate Info + Hectare Table -->
+            <div class="space-y-1 flex-1">
+              <div class="flex items-center gap-2">
+                <input id="InputCompanyName" type="text" value="FGV PLANTATIONS (MALAYSIA) SDN. BHD." class="font-extrabold text-sm sm:text-base text-slate-900 bg-transparent border-b border-transparent hover:border-slate-300 focus:border-emerald-600 focus:outline-none w-full max-w-md" />
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-xs sm:text-sm text-slate-700 whitespace-nowrap">LADANG :</span>
+                <input id="InputEstateName" type="text" value="LADANG FGVPM : ARING 03" class="font-extrabold text-xs sm:text-sm text-emerald-900 bg-emerald-50/70 px-2 py-0.5 rounded border border-emerald-300 focus:outline-none focus:ring-1 focus:ring-emerald-600 w-full max-w-xs" />
+              </div>
+
+              <!-- Land Area Mini Grid -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1.5 max-w-2xl">
+                <div class="bg-slate-50 border border-slate-300 rounded px-2 py-1">
+                  <label class="block text-[10px] font-bold text-slate-600">LUAS BERHASIL (HEK)</label>
+                  <input id="InputLuasBerhasil" type="number" step="0.01" value="1343.23" class="w-full font-bold text-xs text-slate-900 bg-transparent focus:outline-none" />
+                </div>
+                <div class="bg-slate-50 border border-slate-300 rounded px-2 py-1">
+                  <label class="block text-[10px] font-bold text-slate-600">LUAS BELUM BERHASIL (PR)</label>
+                  <input id="InputLuasBelumBerhasil" type="number" step="0.01" value="178.47" class="w-full font-bold text-xs text-slate-900 bg-transparent focus:outline-none" />
+                </div>
+                <div class="bg-slate-50 border border-slate-300 rounded px-2 py-1">
+                  <label class="block text-[10px] font-bold text-slate-600">LUAS TANAM SEMULA (HEK)</label>
+                  <input id="InputLuasTanamSemula" type="number" step="0.01" value="0.00" class="w-full font-bold text-xs text-slate-900 bg-transparent focus:outline-none" />
+                </div>
+                <div class="bg-emerald-50 border border-emerald-400 rounded px-2 py-1">
+                  <span class="block text-[10px] font-bold text-emerald-800">JUMLAH LUAS LADANG</span>
+                  <span id="DisplayJumlahLuas" class="font-extrabold text-xs text-emerald-950">1521.70 HEK</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Center Title Banner -->
+            <div class="text-center self-center px-4 py-1.5 bg-slate-900 text-white rounded-lg shadow-sm">
+              <div class="text-sm sm:text-base font-extrabold tracking-widest uppercase">MUSTER CHIT</div>
+              <div class="text-[10px] text-slate-300 font-medium">LAPORAN HARIAN PEKERJA LADANG / PEMBORONG</div>
+            </div>
+
+            <!-- Right: Date, Day, Current Labor -->
+            <div class="grid grid-cols-3 lg:grid-cols-1 gap-1.5 min-w-[230px] bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-bold text-slate-600">TARIKH :</span>
+                <input id="InputTarikh" type="date" value="2026-09-11" class="font-bold text-slate-900 bg-white border border-slate-300 rounded px-1.5 py-0.5 text-xs focus:outline-none focus:border-emerald-600" />
+              </div>
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-bold text-slate-600">HARI :</span>
+                <input id="InputHari" type="text" value="JUMAAT" class="font-bold text-slate-900 bg-white border border-slate-300 rounded px-1.5 py-0.5 text-xs text-right w-28 uppercase focus:outline-none focus:border-emerald-600" />
+              </div>
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-bold text-slate-600">BIL. BURUH SEMASA :</span>
+                <input id="InputBuruhSemasa" type="number" value="159" class="font-extrabold text-emerald-900 bg-emerald-100/70 border border-emerald-400 rounded px-1.5 py-0.5 text-xs text-right w-20 focus:outline-none" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Custom Job Row Bar (Hidden on Print & Screenshot) -->
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2 text-xs no-print no-screenshot bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+          <div class="text-slate-600 font-medium">
+            💡 <span class="font-semibold text-slate-800">Tip:</span> Klik mana-mana sel untuk isi nilai <span class="font-bold">ADA</span>, <span class="font-bold">HADIR</span>, atau <span class="font-bold text-blue-700">BLOK</span>. Nama penyelia & peringkat di kepala jadual juga boleh diubah.
+          </div>
+          <div class="flex flex-wrap items-center gap-1.5">
+            <select id="NewRowCategory" class="bg-white border border-slate-300 rounded px-2 py-1 text-xs font-medium">
+              <option value="cat_1">1. PUNGUTAN</option>
+              <option value="cat_2">2. MERUMPUT</option>
+              <option value="cat_3">3. MEMBAJA</option>
+              <option value="cat_4">4. MUSUH DAN PENYAKIT</option>
+              <option value="cat_5">5. PENJAGAAN LADANG</option>
+              <option value="cat_6">6. TANAM SEMULA</option>
+              <option value="cat_7">7. NURSERI</option>
+              <option value="sec_B">B. PENTADBIRAN</option>
+              <option value="sec_C">C. KETIDAKHADIRAN</option>
+            </select>
+            <input id="NewRowLabel" type="text" placeholder="Nama jenis pekerjaan baharu..." class="bg-white border border-slate-300 rounded px-2 py-1 text-xs w-48 focus:outline-none focus:border-emerald-600" />
+            <button type="button" id="BtnAddJobRow" class="bg-emerald-700 hover:bg-emerald-600 text-white font-semibold px-2.5 py-1 rounded transition">
+              + Tambah Baris Kerja
+            </button>
+          </div>
+        </div>
+
+        <!-- Muster Chit Main Excel Table -->
+        <div class="overflow-x-auto">
+          <table class="excel-table" id="MusterTable">
+            <thead>
+              <tr>
+                <th rowspan="3" class="w-8">BIL</th>
+                <th rowspan="3" class="min-w-[185px] text-left px-2">JENIS PEKERJAAN</th>
+                <th colspan="20">LAPORAN HARIAN PEKERJA LADANG / PEMBORONG</th>
+                <th colspan="2" rowspan="2" class="bg-emerald-950">JUMLAH BESAR</th>
+              </tr>
+              <tr class="sub-header-1" id="HeaderSupervisorRow">
+                <!-- Dynamically populated supervisor inputs -->
+              </tr>
+              <tr class="sub-header-2" id="HeaderSubColsRow">
+                <!-- Dynamically populated ADA / HADIR / BLOK headers -->
+              </tr>
+            </thead>
+            <tbody id="MusterTbody">
+              <!-- Dynamically rendered rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Bottom Summary: Harvest Tonnage, Attendance %, and Official Signatures -->
+        <div class="mt-4 grid grid-cols-1 lg:grid-cols-12 gap-4 items-start pt-2 border-t border-slate-300">
+          <!-- Left: Harvest Tonnage & Attendance Rate Box (5 cols) -->
+          <div class="lg:col-span-5">
+            <table class="excel-table">
+              <thead>
+                <tr>
+                  <th class="text-left px-2 bg-slate-800">RINGKASAN KEHADIRAN & HASIL TUAI</th>
+                  <th class="w-24 bg-slate-800">TAN / %</th>
+                  <th class="w-24 bg-slate-800">TAN / HA</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="bg-amber-50 font-bold">
+                  <td class="px-2 py-1.5">PENCAPAIAN KEHADIRAN HARI INI (%)</td>
+                  <td id="CellAttendancePct" class="text-center font-extrabold text-emerald-800 text-xs">88.68%</td>
+                  <td id="CellAttendanceRatio" class="text-center text-slate-600 text-[11px]">141 / 159</td>
+                </tr>
+                <tr>
+                  <td class="px-2 py-1 font-semibold">JUMLAH TAN TUAI (HARI SEBELUMNYA)</td>
+                  <td>
+                    <input id="InputTanTuai" type="number" step="0.01" value="84.69" class="cell-input font-bold text-slate-900" />
+                  </td>
+                  <td id="CellTanTuaiPerHa" class="text-center font-semibold text-slate-700">0.063</td>
+                </tr>
+                <tr>
+                  <td class="px-2 py-1 font-semibold">HANTARAN KE KILANG (TAN)</td>
+                  <td>
+                    <input id="InputHantaranKilang" type="number" step="0.01" value="84.69" class="cell-input font-bold text-slate-900" />
+                  </td>
+                  <td id="CellHantaranPerHa" class="text-center font-semibold text-slate-700">0.063</td>
+                </tr>
+                <tr class="bg-slate-50 font-bold">
+                  <td class="px-2 py-1">BACKLOG (TAN)</td>
+                  <td>
+                    <input id="InputBacklog" type="number" step="0.01" value="0.00" class="cell-input font-bold text-rose-700" />
+                  </td>
+                  <td id="CellBacklogPerHa" class="text-center font-semibold text-slate-700">0.000</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Right: Signature Blocks (7 cols) -->
+          <div class="lg:col-span-7 grid grid-cols-2 gap-4 pt-1 text-xs">
+            <div class="border border-slate-300 rounded-lg p-3 flex flex-col justify-between min-h-[110px] bg-slate-50/40">
+              <div class="font-bold text-slate-700">DISEDIAKAN OLEH :-</div>
+              <div class="mt-8 border-b border-slate-800 pb-1">
+                <input id="InputSignPrepared" type="text" placeholder="(Tandatangan / Nama)" class="w-full text-center font-semibold text-xs bg-transparent focus:outline-none" />
+              </div>
+              <div class="text-center font-bold text-slate-800 mt-1">PENOLONG PENGURUS</div>
+            </div>
+
+            <div class="border border-slate-300 rounded-lg p-3 flex flex-col justify-between min-h-[110px] bg-slate-50/40">
+              <div class="font-bold text-slate-700">DISAHKAN OLEH :-</div>
+              <div class="mt-8 border-b border-slate-800 pb-1">
+                <input id="InputSignApproved" type="text" placeholder="(Tandatangan / Nama)" class="w-full text-center font-semibold text-xs bg-transparent focus:outline-none" />
+              </div>
+              <div class="text-center font-bold text-slate-800 mt-1">PENGURUS</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= SECTION 2: PERGERAKAN KENDERAAN / JENTERA ================= -->
+      <div id="SectionJentera" class="hidden mt-6 pt-5 border-t-2 border-slate-800 page-break-before">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div>
+            <h2 class="text-sm sm:text-base font-extrabold text-slate-900 uppercase tracking-wide">
+              PERGERAKAN KENDERAAN / JENTERA HARIAN :-
+            </h2>
+            <p class="text-xs text-slate-600 font-medium">
+              * Ladang perlu masukkan semua kenderaan dan jentera kecuali Double Cab Pengurus
+            </p>
+          </div>
+          <div class="flex items-center gap-2 no-print no-screenshot">
+            <input id="NewVehicleName" type="text" placeholder="Nama Kenderaan / No. Pendaftaran..." class="border border-slate-300 rounded px-2.5 py-1 text-xs w-56 focus:outline-none focus:border-emerald-600" />
+            <input id="NewVehicleBlok" type="text" placeholder="Kaw. Kerja (Blok)" class="border border-slate-300 rounded px-2.5 py-1 text-xs w-32 focus:outline-none focus:border-emerald-600" />
+            <input id="NewVehicleTask" type="text" placeholder="Jenis Kerja / Tugasan..." class="border border-slate-300 rounded px-2.5 py-1 text-xs w-52 focus:outline-none focus:border-emerald-600" />
+            <button type="button" id="BtnAddVehicle" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-semibold px-3 py-1 rounded transition">
+              + Tambah Jentera
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="excel-table" id="VehicleTable">
+            <thead>
+              <tr>
+                <th class="w-10">BIL</th>
+                <th class="text-left px-3 w-2/5">KENDERAAN / JENTERA</th>
+                <th class="w-44">KAW. KERJA (BLOK)</th>
+                <th class="text-left px-3">JENIS KERJA / CATATAN OPERASI</th>
+                <th class="w-28">STATUS</th>
+                <th class="w-16 no-print no-screenshot">TINDAKAN</th>
+              </tr>
+            </thead>
+            <tbody id="VehicleTbody">
+              <!-- Dynamically rendered vehicle rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /#CaptureArea -->
+
+    <!-- ================= SECTION 4: PENGUMPULAN DATA & REKOD HARIAN (ARCHIVE) ================= -->
+    <section id="SectionArchive" class="hidden mt-4 bg-white rounded-xl shadow-sm border border-slate-300 p-4 sm:p-6 no-print no-screenshot">
+      <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200">
+        <div>
+          <h2 class="text-base font-extrabold text-slate-900">Pangkalan Pengumpulan Rekod Muster Chit & Jentera</h2>
+          <p class="text-xs text-slate-600 mt-0.5">
+            Semua laporan harian yang disimpan dikumpulkan di sini seperti buku kerja Excel berbilang lembaran (multi-sheet). Klik <span class="font-bold text-emerald-700">Buka / Edit</span> untuk memuatkan semula data ke dalam borang.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" id="BtnExportAllCsv" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+            Eksport Ringkasan Terkumpul (CSV)
+          </button>
+          <button type="button" id="BtnExportJson" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+            Muat Turun Sandaran (JSON)
+          </button>
+          <label class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-xs font-semibold px-3 py-1.5 rounded-lg cursor-pointer transition">
+            <span>Muat Naik JSON</span>
+            <input id="InputImportJson" type="file" accept=".json" class="hidden" />
+          </label>
+        </div>
+      </div>
+
+      <!-- Aggregate Summary Stats across all saved dates -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 my-4">
+        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+          <div class="text-[11px] font-bold text-emerald-800 uppercase">Jumlah Rekod Disimpan</div>
+          <div id="AggTotalRecords" class="text-xl font-extrabold text-emerald-950 mt-0.5">4 Hari</div>
+        </div>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <div class="text-[11px] font-bold text-blue-800 uppercase">Purata Kehadiran Pekerja</div>
+          <div id="AggAvgAttendance" class="text-xl font-extrabold text-blue-950 mt-0.5">82.05%</div>
+        </div>
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3">
+          <div class="text-[11px] font-bold text-amber-800 uppercase">Jumlah Terkumpul Tan Tuai</div>
+          <div id="AggTotalTanTuai" class="text-xl font-extrabold text-amber-950 mt-0.5">294.86 TAN</div>
+        </div>
+        <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3">
+          <div class="text-[11px] font-bold text-indigo-800 uppercase">Jumlah Hantaran Kilang</div>
+          <div id="AggTotalHantaran" class="text-xl font-extrabold text-indigo-950 mt-0.5">279.16 TAN</div>
+        </div>
+      </div>
+
+      <!-- Saved Records Table -->
+      <div class="overflow-x-auto">
+        <table class="excel-table">
+          <thead>
+            <tr>
+              <th>BIL</th>
+              <th class="text-left px-2">TARIKH & HARI</th>
+              <th class="text-left px-2">NAMA LADANG</th>
+              <th>LUAS (HEK)</th>
+              <th>PEKERJA OPERASI (HADIR/ADA)</th>
+              <th>PENTADBIRAN (HADIR/ADA)</th>
+              <th>JUMLAH HADIR</th>
+              <th>TAK HADIR</th>
+              <th>% KEHADIRAN</th>
+              <th>TAN TUAI</th>
+              <th>HANTARAN KILANG</th>
+              <th>JENTERA AKTIF</th>
+              <th>TINDAKAN</th>
+            </tr>
+          </thead>
+          <tbody id="ArchiveTbody">
+            <!-- Dynamically populated archive rows -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div id="ToastBox" class="fixed bottom-4 right-4 z-50 hidden bg-slate-900 text-white px-4 py-2.5 rounded-lg shadow-xl border border-slate-700 text-xs font-semibold items-center gap-2 no-print no-screenshot">
+    <span id="ToastText">Rekod berjaya disimpan!</span>
+  </div>
+
+  <script>
+    // ============================================================================
+    // 1. SCHEMA & INITIAL DATA FROM UPLOADED EXCEL WORKBOOK
+    // ============================================================================
+    const DAYS_MS = ['AHAD', 'ISNIN', 'SELASA', 'RABU', 'KHAMIS', 'JUMAAT', 'SABTU'];
+
+    // 7 Column Groups matching the Excel sheet structure:
+    // Group 0..5 have (ADA, HADIR, BLOK), Group 6 (PENTADBIRAN) has (ADA, HADIR)
+    function createDefaultDivisionsAring03() {
+      return [
+        { id: 'g0', supervisor: 'ORIENTASI', blockName: 'ORIENTASI', hasBlok: true },
+        { id: 'g1', supervisor: 'ABDUL BASID', blockName: 'PR23L', hasBlok: true },
+        { id: 'g2', supervisor: 'ABDUL BASID', blockName: 'PM00E', hasBlok: true },
+        { id: 'g3', supervisor: 'MOHD RAZIS', blockName: 'PM06F', hasBlok: true },
+        { id: 'g4', supervisor: 'MOHD RAZI', blockName: 'PM10G & PM11H', hasBlok: true },
+        { id: 'g5', supervisor: 'MOHD RAZIS', blockName: 'PM12J & PM13K', hasBlok: true },
+        { id: 'g6', supervisor: 'PENTADBIRAN', blockName: 'PENTADBIRAN', hasBlok: false }
+      ];
+    }
+
+    function createDefaultDivisionsLepar10() {
+      return [
+        { id: 'g0', supervisor: 'ORIENTASI', blockName: 'ORIENTASI', hasBlok: true },
+        { id: 'g1', supervisor: 'ZAKARIA BIN YASIN', blockName: 'PR23N', hasBlok: true },
+        { id: 'g2', supervisor: 'IKHWAN BIN SALLEH', blockName: 'PM06K', hasBlok: true },
+        { id: 'g3', supervisor: 'AMRI BIN JUSOH', blockName: 'PM11L', hasBlok: true },
+        { id: 'g4', supervisor: 'SULAIMAN BIN ZUBIR', blockName: 'PM12M', hasBlok: true },
+        { id: 'g5', supervisor: '-', blockName: 'TAMBAHAN', hasBlok: true },
+        { id: 'g6', supervisor: 'PENTADBIRAN', blockName: 'PENTADBIRAN', hasBlok: false }
+      ];
+    }
+
+    // Standard Job Structure matching 1.MUSTERCHIT & Lepar Utara 10
+    const BASE_CATEGORIES = [
+      {
+        id: 'cat_1',
+        section: 'A',
+        num: '1',
+        title: 'PUNGUTAN',
+        items: [
+          { id: 'r_menuai', label: 'Menuai Sawit / Menoreh getah' },
+          { id: 'r_relai', label: 'Kutip Biji Relai' },
+          { id: 'r_loader', label: 'Pemuat ( Loader )' }
+        ]
+      },
+      {
+        id: 'cat_2',
+        section: 'A',
+        num: '2',
+        title: 'MERUMPUT',
+        items: [
+          { id: 'r_bulatan', label: 'Bulatan' },
+          { id: 'r_mendada', label: 'Mendada ( Anak Kayu )' },
+          { id: 'r_vops', label: 'Sawit Liar ( VOPS )' }
+        ]
+      },
+      {
+        id: 'cat_3',
+        section: 'A',
+        num: '3',
+        title: 'MEMBAJA',
+        items: [
+          { id: 'r_baja_manual', label: 'Manual' },
+          { id: 'r_baja_subsoil', label: 'Subsoil' },
+          { id: 'r_baja_spreader', label: 'Spreader' }
+        ]
+      },
+      {
+        id: 'cat_4',
+        section: 'A',
+        num: '4',
+        title: 'MUSUH DAN PENYAKIT',
+        items: [
+          { id: 'r_butik', label: 'Tabur Butik' },
+          { id: 'r_bunga', label: 'Bunga Berfaedah' },
+          { id: 'r_upd', label: 'UPD' },
+          { id: 'r_gano', label: 'Ganoderma' },
+          { id: 'r_pnd_lain', label: 'P&D & Lain - Lain' }
+        ]
+      },
+      {
+        id: 'cat_5',
+        section: 'A',
+        num: '5',
+        title: 'PENJAGAAN LADANG',
+        items: [
+          { id: 'r_prunning', label: 'Penjagaan Pelepah ( Prunning )' },
+          { id: 'r_tanah_air', label: 'Pemuliharaan Tanah & Air (Tanam MB)' },
+          { id: 'r_parit', label: 'Penjagaan Parit' },
+          { id: 'r_jalan', label: 'Penjagaan Jalan Pertanian' },
+          { id: 'r_sempadan', label: 'Penjagaan Sempadan' },
+          { id: 'r_banci', label: 'Penjarangan pokok (Banci Pokok)' },
+          { id: 'r_jaga_lain', label: 'Lain-lain (AM/ABLATION)' }
+        ]
+      },
+      {
+        id: 'cat_6',
+        section: 'A',
+        num: '6',
+        title: 'TANAM SEMULA (PEMBANGUNAN)',
+        items: [
+          { id: 'r_ts_membaris', label: 'Membaris / Penjagaan CECT' },
+          { id: 'r_ts_hamparan', label: 'Merumput Hamparan' },
+          { id: 'r_ts_tebang', label: 'Tebang Cincang / Sulam Pokok' },
+          { id: 'r_ts_kekacang', label: 'Menanam Kekacang / Mancah Anak Kayu' },
+          { id: 'r_ts_melubang', label: 'Melubang / Pagar Ternakan' },
+          { id: 'r_ts_tanam', label: 'Menanam Pokok / Merumput Bulatan' },
+          { id: 'r_ts_mulching', label: 'Mulching / Meracun P&D' },
+          { id: 'r_ts_lain', label: 'Lain-lain (GPS / Repacking Baja)' }
+        ]
+      },
+      {
+        id: 'cat_7',
+        section: 'A',
+        num: '7',
+        title: 'NURSERI ( TAPAK SEMAIAN )',
+        items: [
+          { id: 'r_nur_merumput', label: 'Merumput' },
+          { id: 'r_nur_membaja', label: 'Membaja' },
+          { id: 'r_nur_menyiram', label: 'Menyiram' },
+          { id: 'r_nur_polibeg', label: 'Isi Tanah Polibeg' },
+          { id: 'r_nur_sungkupan', label: 'Sungkupan' },
+          { id: 'r_nur_pam', label: 'Pam Enjin Air' },
+          { id: 'r_nur_plough', label: 'Plough & Rotoshaher' },
+          { id: 'r_nur_tanam', label: 'Tanam Pokok Sawit' },
+          { id: 'r_nur_lain', label: 'Lain-lain' }
+        ]
+      }
+    ];
+
+    const BASE_ADMIN_ITEMS = [
+      { id: 'b_mandor_tuai', label: 'Mandor Tuai' },
+      { id: 'b_mandor_am', label: 'Mandor Am' },
+      { id: 'b_checker', label: 'Checker' },
+      { id: 'b_pemandu_op', label: 'Pemandu Operasi Ladang' },
+      { id: 'b_pemandu_admin', label: 'Pemandu Pentadbiran' },
+      { id: 'b_warden', label: 'Warden Asrama' },
+      { id: 'b_kebun', label: 'Tukang Kebun / Asrama' },
+      { id: 'b_pembantu', label: 'Pembantu Pentadbiran' },
+      { id: 'b_pondok', label: 'Operator Pondok Resit' },
+      { id: 'b_imam', label: 'Imam' },
+      { id: 'b_bersih', label: 'Pembersihan Perumahan/Asrama' }
+    ];
+
+    const BASE_ABSENT_ITEMS = [
+      { id: 'c_ponteng', label: 'Ponteng' },
+      { id: 'c_klinik', label: 'Ke Klinik' },
+      { id: 'c_sakit', label: 'Cuti Sakit' },
+      { id: 'c_bersalin', label: 'Cuti Bersalin' },
+      { id: 'c_tahun', label: 'Cuti Tahun' },
+      { id: 'c_minggu', label: 'Cuti Minggu / Cuti Am' },
+      { id: 'c_fomema', label: 'FOMEMA / Urusan Kedutaan' },
+      { id: 'c_ehsan', label: 'Cuti Ehsan' },
+      { id: 'c_wad', label: 'Wad' },
+      { id: 'c_com', label: 'C.O.M & Lari' },
+      { id: 'c_kampung', label: 'Balik Cuti Kampung' },
+      { id: 'c_doktor', label: 'Temujanji Doktor' },
+      { id: 'c_rasmi', label: 'Urusan Rasmi' }
+    ];
+
+    const DEFAULT_VEHICLES_ARING03 = [
+      { id: 'v1', name: 'EUROSTAR GRABBER 5240 III GRABBER 4 JAWS (VGN 3834)', blok: 'PM00E', task: 'Angkut dalaman', status: 'Beroperasi' },
+      { id: 'v2', name: 'EUROSTAR GRABBER 5240 III GRABBER 4 JAWS (VGN 4379)', blok: 'PM06F', task: 'Angkut dalaman', status: 'Beroperasi' },
+      { id: 'v3', name: 'EUROSTAR GRABBER 5240 III GRABBER 4 JAWS (VJF 3591)', blok: 'PM11H', task: 'Angkut dalaman', status: 'Beroperasi' },
+      { id: 'v4', name: 'EUROSTAR GRABBER 5240 III GRABBER 4 JAWS (VJG 5158)', blok: 'PM12J', task: 'Angkut dalaman', status: 'Beroperasi' },
+      { id: 'v5', name: 'NEW HOLLAND (TRAKTOR TS6000) (WXS 2859)', blok: 'PR23L', task: 'Gantung tong air prenix racun bulatan', status: 'Beroperasi' },
+      { id: 'v6', name: 'NEW HOLLAND (TRAKTOR TS6000) (BLW 4918)', blok: 'PM00E', task: 'Angkut baja', status: 'Beroperasi' },
+      { id: 'v7', name: 'EUROSTAR 4240-II (WA7019Y)', blok: 'PM00E', task: 'Angkut baja', status: 'Beroperasi' },
+      { id: 'v8', name: 'EUROSTAR 4240-II (WA7026Y)', blok: 'PM00E', task: 'Angkut baja', status: 'Beroperasi' },
+      { id: 'v9', name: 'KUBOTA L3800DT (VAP 6454)', blok: 'PR23L', task: 'Kerja Am', status: 'Beroperasi' },
+      { id: 'v10', name: 'KUBOTA L3800DT (VAP 7392)', blok: 'PM12J', task: 'Angkut tong meracun bulatan', status: 'Beroperasi' },
+      { id: 'v11', name: 'LORI ( WA 7481M )', blok: 'PM06F', task: 'Angkut pekerja', status: 'Beroperasi' },
+      { id: 'v12', name: 'LORI ( WRK 4692 )', blok: 'PM10G & PM11H', task: 'Angkut pekerja', status: 'Beroperasi' },
+      { id: 'v13', name: 'LORI ( WA 7530M )', blok: 'PM12J & PM13K', task: 'Angkut pekerja', status: 'Beroperasi' },
+      { id: 'v14', name: 'HILUX SINGLE CAB ( WPS 5597 )', blok: 'Bengkel', task: 'Angkut pekerja', status: 'Beroperasi' },
+      { id: 'v15', name: 'VAN (WVH 7531)', blok: 'Bengkel', task: 'Urusan klinik', status: 'Beroperasi' },
+      { id: 'v16', name: 'BAS SEKOLAH (VLE 6746)', blok: 'Pejabat', task: 'Cuti sekolah - Tidak digunakan', status: 'Cuti / Rehat' }
+    ];
+
+    const DEFAULT_VEHICLES_LEPAR10 = [
+      { id: 'vl1', name: 'BACKHOE', blok: 'Pejabat', task: 'Membersihkan side table jalan masuk pejabat & meratakan tapak tempat letak traktor', status: 'Beroperasi' },
+      { id: 'vl2', name: 'TRAKTOR ( WA4453P )', blok: 'PM12M', task: 'PM12M - ANGKUT BAJA', status: 'Beroperasi' },
+      { id: 'vl3', name: 'TRAKTOR ( VCS8057 )', blok: 'Bengkel', task: 'ROSAK', status: 'Rosak' },
+      { id: 'vl4', name: 'TRAKTOR ( VLB8758 )', blok: 'PM12M', task: 'PM12M - PINDAH BTS KE TONG BIN', status: 'Beroperasi' },
+      { id: 'vl5', name: 'TRAKTOR ( WSY 1654 )', blok: 'PM06K', task: 'PM06K - PINDAH BTS KE TONG BIN', status: 'Beroperasi' },
+      { id: 'vl6', name: 'VAN SEK ( VBX5150 )', blok: 'Pejabat', task: 'CUTI SEKOLAH', status: 'Cuti / Rehat' },
+      { id: 'vl7', name: 'LORI ( WA903P )', blok: 'PR23N', task: 'PR23N - ANGKUT PEKERJA MERACUN DAN TONG', status: 'Beroperasi' },
+      { id: 'vl8', name: 'LORI ( VGP7637 )', blok: 'PM11L', task: 'ANGKUT PEKERJA MEMBAJA & MERUMPUT BULATAN', status: 'Beroperasi' },
+      { id: 'vl9', name: 'HILUX SINGLE CAB ( VCS6493 )', blok: 'Ladang', task: 'UTILITI', status: 'Beroperasi' }
+    ];
+
+    // Helper to build Preset States accurately matching the 4 Excel sheets
+    function buildPresetState(presetKey) {
+      const deepCopy = (obj) => JSON.parse(JSON.stringify(obj));
+      const categories = deepCopy(BASE_CATEGORIES);
+      const adminItems = deepCopy(BASE_ADMIN_ITEMS);
+      const absentItems = deepCopy(BASE_ABSENT_ITEMS);
+      const cells = {};
+
+      const setCell = (rowId, gIdx, ada, hadir, blok = '') => {
+        if (!cells[rowId]) cells[rowId] = {};
+        cells[rowId]['g' + gIdx] = { ada: Number(ada) || 0, hadir: Number(hadir) || 0, blok: String(blok || '') };
+      };
+
+      if (presetKey === 'aring03_weekday') {
+        // Sheet: 1.MUSTERCHIT (Aring 03)
+        setCell('r_menuai', 2, 4, 3, '26');
+        setCell('r_menuai', 3, 20, 20, '2');
+        setCell('r_menuai', 4, 18, 18, '9');
+        setCell('r_menuai', 5, 20, 19, '17');
+
+        setCell('r_loader', 3, 1, 1, '2');
+        setCell('r_loader', 4, 1, 1, '9');
+        setCell('r_loader', 5, 1, 1, '16');
+
+        setCell('r_vops', 1, 1, 1, '');
+
+        setCell('r_baja_manual', 1, 5, 5, '');
+        setCell('r_baja_manual', 3, 15, 11, '6');
+        setCell('r_baja_manual', 4, 8, 8, '9');
+
+        setCell('r_prunning', 3, 2, 2, '2');
+        setCell('r_jaga_lain', 1, 11, 11, '23');
+
+        // Admin
+        setCell('b_mandor_tuai', 3, 1, 1);
+        setCell('b_mandor_tuai', 4, 1, 1);
+        setCell('b_mandor_tuai', 5, 1, 1);
+
+        setCell('b_mandor_am', 1, 1, 1);
+        setCell('b_mandor_am', 4, 3, 3);
+        setCell('b_mandor_am', 5, 1, 1);
+
+        setCell('b_checker', 3, 1, 1);
+        setCell('b_checker', 4, 1, 1);
+        setCell('b_checker', 5, 1, 1);
+
+        setCell('b_pemandu_op', 1, 3, 3);
+        setCell('b_pemandu_op', 2, 2, 2);
+        setCell('b_pemandu_op', 3, 1, 1);
+        setCell('b_pemandu_op', 4, 4, 3);
+        setCell('b_pemandu_op', 5, 2, 2);
+
+        setCell('b_pemandu_admin', 6, 2, 2);
+        setCell('b_warden', 6, 1, 1);
+        setCell('b_kebun', 6, 1, 1);
+        setCell('b_pembantu', 6, 2, 2);
+        setCell('b_imam', 6, 1, 1);
+        setCell('b_bersih', 6, 11, 11);
+
+        // Absent
+        setCell('c_ponteng', 3, 4, 4);
+        setCell('c_ponteng', 5, 1, 1);
+        setCell('c_klinik', 2, 1, 1);
+        setCell('c_klinik', 4, 1, 1);
+        setCell('c_kampung', 2, 1, 1);
+        setCell('c_kampung', 4, 1, 1);
+        setCell('c_kampung', 5, 2, 2);
+
+        return {
+          id: 'rec_aring03_weekday',
+          presetKey,
+          companyName: 'FGV PLANTATIONS (MALAYSIA) SDN. BHD.',
+          estateName: 'LADANG FGVPM : ARING 03',
+          luasBerhasil: 1343.23,
+          luasBelumBerhasil: 178.47,
+          luasTanamSemula: 0,
+          tarikh: '2026-09-11',
+          hari: 'KHAMIS',
+          buruhSemasa: 159,
+          tanTuai: 84.69,
+          hantaranKilang: 84.69,
+          backlog: 0,
+          signPrepared: '',
+          signChecked: '',
+          signApproved: '',
+          divisions: createDefaultDivisionsAring03(),
+          categories,
+          adminItems,
+          absentItems,
+          cells,
+          vehicles: deepCopy(DEFAULT_VEHICLES_ARING03)
+        };
+      }
+
+      if (presetKey === 'aring03_weekend') {
+        // Sheet: hari minggu @ AM (Aring 03)
+        setCell('r_menuai', 2, 4, 3, '26');
+        setCell('r_menuai', 3, 20, 20, '3');
+        setCell('r_menuai', 4, 18, 18, '11');
+        setCell('r_menuai', 5, 20, 20, '14');
+
+        setCell('r_loader', 3, 1, 1, '3');
+        setCell('r_loader', 4, 1, 1, '11');
+        setCell('r_loader', 5, 1, 1, '14');
+
+        setCell('b_mandor_tuai', 3, 1, 1);
+        setCell('b_mandor_tuai', 4, 1, 1);
+        setCell('b_mandor_tuai', 5, 1, 1);
+
+        setCell('b_pemandu_op', 2, 1, 1);
+        setCell('b_pemandu_op', 3, 1, 1);
+        setCell('b_pemandu_op', 4, 1, 1);
+        setCell('b_pemandu_op', 5, 1, 1);
+        setCell('b_pemandu_admin', 6, 2, 2);
+
+        setCell('c_minggu', 1, 21, 21);
+        setCell('c_minggu', 2, 2, 3);
+        setCell('c_minggu', 3, 22, 22);
+        setCell('c_minggu', 4, 16, 16);
+        setCell('c_minggu', 5, 4, 4);
+        setCell('c_minggu', 6, 16, 16);
+
+        setCell('c_kampung', 2, 1, 1);
+        setCell('c_kampung', 4, 1, 1);
+        setCell('c_kampung', 5, 2, 2);
+
+        return {
+          id: 'rec_aring03_weekend',
+          presetKey,
+          companyName: 'FGV PLANTATIONS (MALAYSIA) SDN. BHD.',
+          estateName: 'LADANG FGVPM : ARING 03',
+          luasBerhasil: 1343.23,
+          luasBelumBerhasil: 178.47,
+          luasTanamSemula: 0,
+          tarikh: '2026-09-12',
+          hari: 'JUMAAT (CUTI MINGGU)',
+          buruhSemasa: 159,
+          tanTuai: 84.47,
+          hantaranKilang: 84.47,
+          backlog: 0,
+          signPrepared: '',
+          signChecked: '',
+          signApproved: '',
+          divisions: createDefaultDivisionsAring03(),
+          categories,
+          adminItems,
+          absentItems,
+          cells,
+          vehicles: deepCopy(DEFAULT_VEHICLES_ARING03)
+        };
+      }
+
+      if (presetKey === 'lepar10_12jan') {
+        // Sheet: 12.01.25 pekerja (Lepar Utara 10)
+        setCell('r_menuai', 2, 14, 13, '1');
+        setCell('r_menuai', 3, 18, 18, '21');
+        setCell('r_menuai', 4, 26, 25, '16');
+
+        setCell('r_loader', 2, 2, 2, '1');
+        setCell('r_loader', 3, 2, 2, '17');
+        setCell('r_loader', 4, 3, 3, '16');
+
+        setCell('r_bulatan', 1, 5, 5, '23');
+        setCell('r_bulatan', 3, 4, 4, '17');
+        setCell('r_mendada', 2, 8, 8, '1');
+
+        setCell('r_baja_manual', 0, 5, 5, '7');
+        setCell('r_baja_manual', 2, 3, 3, '21');
+
+        setCell('r_upd', 2, 2, 2, '3');
+
+        setCell('r_prunning', 0, 5, 5, '8');
+        setCell('r_prunning', 2, 12, 12, '21');
+
+        setCell('r_ts_membaris', 1, 2, 2, '25');
+        setCell('r_ts_tebang', 1, 5, 5, '25');
+        setCell('r_ts_kekacang', 1, 6, 6, '25');
+        setCell('r_ts_tanam', 1, 3, 3, '26');
+        setCell('r_ts_mulching', 1, 2, 2, '26');
+
+        setCell('b_mandor_tuai', 2, 1, 0, '1');
+        setCell('b_mandor_tuai', 3, 1, 1, '22');
+        setCell('b_mandor_tuai', 4, 1, 1, '13');
+
+        setCell('b_mandor_am', 1, 1, 1, '29');
+        setCell('b_mandor_am', 2, 1, 1, '1');
+        setCell('b_mandor_am', 3, 1, 1, '18');
+        setCell('b_mandor_am', 4, 1, 1, '16');
+
+        setCell('b_checker', 2, 1, 1, '1');
+        setCell('b_checker', 3, 1, 1, '22');
+        setCell('b_checker', 4, 1, 1, '13');
+
+        setCell('b_pemandu_op', 1, 1, 1, '29');
+        setCell('b_pemandu_op', 2, 2, 2, '1');
+        setCell('b_pemandu_op', 3, 2, 2, '22');
+        setCell('b_pemandu_op', 4, 2, 2, '13');
+
+        setCell('b_pemandu_admin', 6, 2, 1);
+        setCell('b_warden', 6, 1, 1);
+        setCell('b_kebun', 6, 5, 5);
+        setCell('b_pembantu', 6, 2, 1);
+        setCell('b_pondok', 6, 1, 1);
+        setCell('b_imam', 6, 1, 1);
+
+        setCell('c_ponteng', 2, 0, 1);
+        setCell('c_klinik', 2, 0, 1);
+        setCell('c_klinik', 4, 0, 1);
+        setCell('c_minggu', 6, 0, 2);
+
+        return {
+          id: 'rec_lepar10_12jan',
+          presetKey,
+          companyName: 'FGV PLANTATIONS (MALAYSIA) SDN. BHD.',
+          estateName: 'LADANG FGVPM : LEPAR UTARA 10',
+          luasBerhasil: 1175.18,
+          luasBelumBerhasil: 0,
+          luasTanamSemula: 205.58,
+          tarikh: '2025-01-12',
+          hari: 'AHAD',
+          buruhSemasa: 156,
+          tanTuai: 125.70,
+          hantaranKilang: 110.00,
+          backlog: 15.70,
+          signPrepared: '',
+          signChecked: '',
+          signApproved: '',
+          divisions: createDefaultDivisionsLepar10(),
+          categories,
+          adminItems,
+          absentItems,
+          cells,
+          vehicles: deepCopy(DEFAULT_VEHICLES_LEPAR10)
+        };
+      }
+
+      if (presetKey === 'lepar10_10jan') {
+        // Sheet: 10.01.2025 (Lepar Utara 10 - Jumaat)
+        setCell('r_menuai', 2, 14, 0, '1');
+        setCell('r_menuai', 3, 18, 0, '21');
+        setCell('r_menuai', 4, 26, 0, '16');
+
+        setCell('r_loader', 2, 2, 0, '1');
+        setCell('r_loader', 3, 2, 0, '17');
+        setCell('r_loader', 4, 3, 0, '16');
+
+        setCell('r_bulatan', 3, 4, 0, '');
+        setCell('r_mendada', 2, 8, 0, '');
+
+        setCell('r_baja_manual', 0, 5, 0, '');
+        setCell('r_baja_manual', 2, 3, 0, '');
+
+        setCell('r_upd', 2, 2, 0, '3');
+
+        setCell('r_prunning', 0, 5, 0, '');
+        setCell('r_prunning', 2, 12, 0, '');
+
+        setCell('r_ts_membaris', 1, 2, 0, '');
+        setCell('r_ts_tebang', 1, 5, 0, '');
+        setCell('r_ts_kekacang', 1, 6, 0, '');
+        setCell('r_ts_tanam', 1, 3, 0, '');
+        setCell('r_ts_mulching', 1, 2, 0, '');
+        setCell('r_ts_lain', 1, 4, 0, '');
+
+        setCell('b_mandor_tuai', 2, 1, 0, '');
+        setCell('b_mandor_tuai', 3, 1, 0, '22');
+        setCell('b_mandor_tuai', 4, 1, 0, '13');
+
+        setCell('b_mandor_am', 1, 1, 0, '29');
+        setCell('b_mandor_am', 2, 1, 0, '');
+        setCell('b_mandor_am', 3, 1, 0, '18');
+        setCell('b_mandor_am', 4, 1, 0, '16');
+
+        setCell('b_checker', 2, 1, 0, '');
+        setCell('b_checker', 3, 1, 0, '22');
+        setCell('b_checker', 4, 1, 0, '13');
+
+        setCell('b_pemandu_op', 1, 1, 0, '29');
+        setCell('b_pemandu_op', 2, 2, 0, '');
+        setCell('b_pemandu_op', 3, 2, 0, '22');
+        setCell('b_pemandu_op', 4, 2, 0, '13');
+
+        setCell('b_pemandu_admin', 6, 2, 2);
+        setCell('b_warden', 6, 1, 1);
+        setCell('b_kebun', 6, 5, 0);
+        setCell('b_pembantu', 6, 2, 2);
+        setCell('b_pondok', 6, 1, 1);
+        setCell('b_imam', 6, 1, 1);
+
+        setCell('c_minggu', 0, 0, 10);
+        setCell('c_minggu', 1, 0, 24);
+        setCell('c_minggu', 2, 0, 31);
+        setCell('c_minggu', 3, 0, 40);
+        setCell('c_minggu', 4, 0, 38);
+        setCell('c_minggu', 6, 0, 5);
+
+        return {
+          id: 'rec_lepar10_10jan',
+          presetKey,
+          companyName: 'FGV PLANTATIONS (MALAYSIA) SDN. BHD.',
+          estateName: 'LADANG FELDA : LEPAR UTARA 10',
+          luasBerhasil: 1175.18,
+          luasBelumBerhasil: 0,
+          luasTanamSemula: 205.58,
+          tarikh: '2025-01-10',
+          hari: 'JUMAAT',
+          buruhSemasa: 155,
+          tanTuai: 0,
+          hantaranKilang: 0,
+          backlog: 0,
+          signPrepared: '',
+          signChecked: '',
+          signApproved: '',
+          divisions: createDefaultDivisionsLepar10(),
+          categories,
+          adminItems,
+          absentItems,
+          cells,
+          vehicles: deepCopy(DEFAULT_VEHICLES_LEPAR10)
+        };
+      }
+
+      // Blank form
+      return {
+        id: 'rec_blank_' + Date.now(),
+        presetKey: 'blank_form',
+        companyName: 'FGV PLANTATIONS (MALAYSIA) SDN. BHD.',
+        estateName: 'LADANG FGVPM : ARING 03',
+        luasBerhasil: 1343.23,
+        luasBelumBerhasil: 178.47,
+        luasTanamSemula: 0,
+        tarikh: new Date().toISOString().slice(0, 10),
+        hari: DAYS_MS[new Date().getDay()],
+        buruhSemasa: 159,
+        tanTuai: 0,
+        hantaranKilang: 0,
+        backlog: 0,
+        signPrepared: '',
+        signChecked: '',
+        signApproved: '',
+        divisions: createDefaultDivisionsAring03(),
+        categories,
+        adminItems,
+        absentItems,
+        cells: {},
+        vehicles: deepCopy(DEFAULT_VEHICLES_ARING03)
+      };
+    }
+
+    // ============================================================================
+    // 2. APPLICATION STATE & STORAGE MANAGEMENT
+    // ============================================================================
+    const STORAGE_KEY = 'fgv_muster_chit_records_v1';
+    let currentState = buildPresetState('aring03_weekday');
+    let savedRecords = [];
+    let currentTab = 'muster';
+
+    function loadSavedRecords() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            savedRecords = parsed;
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('LocalStorage tidak dapat diakses:', err);
+      }
+      // Seed with all 4 Excel sheets so the archive is immediately useful
+      savedRecords = [
+        buildPresetState('aring03_weekday'),
+        buildPresetState('aring03_weekend'),
+        buildPresetState('lepar10_12jan'),
+        buildPresetState('lepar10_10jan')
+      ];
+      persistSavedRecords();
+    }
+
+    function persistSavedRecords() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(savedRecords));
+      } catch (err) {
+        console.warn('Gagal menyimpan ke LocalStorage:', err);
+      }
+      const badge = document.getElementById('ArchiveCountBadge');
+      if (badge) badge.textContent = String(savedRecords.length);
+    }
+
+    function showToast(msg) {
+      const box = document.getElementById('ToastBox');
+      const txt = document.getElementById('ToastText');
+      if (!box || !txt) return;
+      txt.textContent = msg;
+      box.classList.remove('hidden');
+      box.classList.add('flex');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        box.classList.add('hidden');
+        box.classList.remove('flex');
+      }, 3200);
+    }
+
+    // ============================================================================
+    // 3. RENDER MUSTER CHIT TABLE & HEADERS
+    // ============================================================================
+    function getCellObj(rowId, divId) {
+      if (!currentState.cells[rowId]) currentState.cells[rowId] = {};
+      if (!currentState.cells[rowId][divId]) {
+        currentState.cells[rowId][divId] = { ada: 0, hadir: 0, blok: '' };
+      }
+      return currentState.cells[rowId][divId];
+    }
+
+    function renderMusterHeaders() {
+      const supRow = document.getElementById('HeaderSupervisorRow');
+      const subRow = document.getElementById('HeaderSubColsRow');
+      supRow.innerHTML = '';
+      subRow.innerHTML = '';
+
+      currentState.divisions.forEach((div) => {
+        const colSpan = div.hasBlok ? 3 : 2;
+        const th = document.createElement('th');
+        th.colSpan = colSpan;
+        th.className = 'p-1';
+        th.innerHTML = `
+          <div class="space-y-0.5">
+            <input type="text" data-div-id="${div.id}" data-field="supervisor" value="${escapeHtml(div.supervisor)}"
+              class="header-edit-input" title="Klik untuk ubah nama penyelia" />
+            <input type="text" data-div-id="${div.id}" data-field="blockName" value="${escapeHtml(div.blockName)}"
+              class="header-edit-input text-amber-200" title="Klik untuk ubah nama kawasan / peringkat" />
+          </div>
+        `;
+        supRow.appendChild(th);
+
+        // Sub-columns: ADA, HADIR, and optional BLOK
+        const thAda = document.createElement('th');
+        thAda.textContent = 'ADA';
+        subRow.appendChild(thAda);
+
+        const thHadir = document.createElement('th');
+        thHadir.textContent = 'HADIR';
+        subRow.appendChild(thHadir);
+
+        if (div.hasBlok) {
+          const thBlok = document.createElement('th');
+          thBlok.textContent = 'BLOK';
+          subRow.appendChild(thBlok);
+        }
+      });
+
+      // Final two sub-headers under JUMLAH BESAR
+      const thTotalAda = document.createElement('th');
+      thTotalAda.textContent = 'ADA';
+      thTotalAda.className = 'bg-emerald-200 text-emerald-950 font-extrabold';
+      subRow.appendChild(thTotalAda);
+
+      const thTotalHadir = document.createElement('th');
+      thTotalHadir.textContent = 'HADIR';
+      thTotalHadir.className = 'bg-emerald-200 text-emerald-950 font-extrabold';
+      subRow.appendChild(thTotalHadir);
+
+      // Attach listeners to supervisor/blockName header inputs
+      supRow.querySelectorAll('input[data-div-id]').forEach((inp) => {
+        inp.addEventListener('input', (e) => {
+          const divId = e.target.getAttribute('data-div-id');
+          const field = e.target.getAttribute('data-field');
+          const found = currentState.divisions.find((d) => d.id === divId);
+          if (found && field) {
+            found[field] = e.target.value;
+          }
+        });
+      });
+    }
+
+    function createDataRowHtml(item, bilText = '') {
+      let colsHtml = '';
+      currentState.divisions.forEach((div) => {
+        const cell = getCellObj(item.id, div.id);
+        const adaVal = cell.ada === 0 ? '' : cell.ada;
+        const hadirVal = cell.hadir === 0 ? '' : cell.hadir;
+        const blokVal = cell.blok || '';
+
+        colsHtml += `
+          <td>
+            <input type="number" min="0" data-row="${item.id}" data-div="${div.id}" data-col="ada"
+              value="${adaVal}" placeholder="0" class="cell-input" />
+          </td>
+          <td>
+            <input type="number" min="0" data-row="${item.id}" data-div="${div.id}" data-col="hadir"
+              value="${hadirVal}" placeholder="0" class="cell-input" />
+          </td>
+        `;
+        if (div.hasBlok) {
+          colsHtml += `
+            <td>
+              <input type="text" data-row="${item.id}" data-div="${div.id}" data-col="blok"
+                value="${escapeHtml(blokVal)}" placeholder="-" class="cell-input cell-input-blok" />
+            </td>
+          `;
+        }
+      });
+
+      return `
+        <tr data-row-id="${item.id}" class="hover:bg-slate-50/80">
+          <td class="text-center font-semibold text-slate-500">${bilText}</td>
+          <td class="font-medium text-slate-800 px-2">${escapeHtml(item.label)}</td>
+          ${colsHtml}
+          <td id="row_tot_ada_${item.id}" class="text-center col-jum-besar">0</td>
+          <td id="row_tot_hadir_${item.id}" class="text-center col-jum-besar">0</td>
+        </tr>
+      `;
+    }
+
+    function createSummaryRowHtml(rowKey, bilText, titleText, rowClass) {
+      let colsHtml = '';
+      currentState.divisions.forEach((div) => {
+        colsHtml += `
+          <td id="sum_${rowKey}_${div.id}_ada" class="text-center">0</td>
+          <td id="sum_${rowKey}_${div.id}_hadir" class="text-center">0</td>
+        `;
+        if (div.hasBlok) {
+          colsHtml += `<td class="bg-slate-200/50"></td>`;
+        }
+      });
+      return `
+        <tr class="${rowClass}">
+          <td class="text-center">${bilText}</td>
+          <td class="px-2">${escapeHtml(titleText)}</td>
+          ${colsHtml}
+          <td id="sum_${rowKey}_total_ada" class="text-center">0</td>
+          <td id="sum_${rowKey}_total_hadir" class="text-center">0</td>
+        </tr>
+      `;
+    }
+
+    function renderMusterBody() {
+      const tbody = document.getElementById('MusterTbody');
+      let html = '';
+
+      // Section A Banner
+      html += `
+        <tr class="row-section-banner">
+          <td class="text-center">A</td>
+          <td colspan="23">OPERASI LADANG</td>
+        </tr>
+      `;
+
+      // Categories 1 to 7
+      currentState.categories.forEach((cat) => {
+        html += createSummaryRowHtml(cat.id, cat.num, cat.title, 'row-cat-header');
+        cat.items.forEach((item) => {
+          html += createDataRowHtml(item, '');
+        });
+      });
+
+      // JUMLAH PEKERJA OPERASI
+      html += createSummaryRowHtml('operasi', '', 'JUMLAH PEKERJA OPERASI', 'row-sub-total');
+
+      // Section B Banner
+      html += `
+        <tr class="row-section-banner">
+          <td class="text-center">B</td>
+          <td colspan="23">PENTADBIRAN</td>
+        </tr>
+      `;
+      currentState.adminItems.forEach((item, idx) => {
+        html += createDataRowHtml(item, String(idx + 1));
+      });
+
+      // JUMLAH PEKERJA PENTADBIRAN
+      html += createSummaryRowHtml('admin', '', 'JUMLAH PEKERJA PENTADBIRAN', 'row-sub-total');
+
+      // JUMLAH PEKERJA HADIR (A + B)
+      html += createSummaryRowHtml('hadir_ab', '', 'JUMLAH PEKERJA HADIR (OPERASI + PENTADBIRAN)', 'row-grand-total');
+
+      // Section C Banner
+      html += `
+        <tr class="row-section-banner">
+          <td class="text-center">C</td>
+          <td colspan="23">KETIDAKHADIRAN</td>
+        </tr>
+      `;
+      currentState.absentItems.forEach((item, idx) => {
+        html += createDataRowHtml(item, String(idx + 1));
+      });
+
+      // JUMLAH KETIDAKHADIRAN
+      html += createSummaryRowHtml('absent', '', 'JUMLAH KETIDAKHADIRAN', 'row-absent-total');
+
+      // JUMLAH KESELURUHAN PEKERJA
+      html += createSummaryRowHtml('overall', '', 'JUMLAH KESELURUHAN PEKERJA', 'row-grand-total');
+
+      tbody.innerHTML = html;
+
+      // Bind cell input events
+      tbody.querySelectorAll('input.cell-input').forEach((inp) => {
+        inp.addEventListener('input', (e) => {
+          const rId = e.target.getAttribute('data-row');
+          const dId = e.target.getAttribute('data-div');
+          const col = e.target.getAttribute('data-col');
+          const cellObj = getCellObj(rId, dId);
+          if (col === 'blok') {
+            cellObj.blok = e.target.value;
+          } else {
+            const val = parseFloat(e.target.value);
+            cellObj[col] = isNaN(val) || val < 0 ? 0 : val;
+          }
+          recalculateAllTotals();
+        });
+      });
+    }
+
+    // ============================================================================
+    // 4. REAL-TIME EXCEL FORMULA ENGINE
+    // ============================================================================
+    function computeTotalsSnapshot(stateObj) {
+      const divs = stateObj.divisions;
+      const getVal = (rId, dId, key) => {
+        return (stateObj.cells[rId] && stateObj.cells[rId][dId] && Number(stateObj.cells[rId][dId][key])) || 0;
+      };
+
+      const rowTotals = {};
+      const sumByKey = {};
+
+      const initSumKey = (k) => {
+        sumByKey[k] = { totalAda: 0, totalHadir: 0, byDiv: {} };
+        divs.forEach((d) => {
+          sumByKey[k].byDiv[d.id] = { ada: 0, hadir: 0 };
+        });
+      };
+
+      initSumKey('operasi');
+      initSumKey('admin');
+      initSumKey('hadir_ab');
+      initSumKey('absent');
+      initSumKey('overall');
+
+      // 1. Categories 1..7
+      stateObj.categories.forEach((cat) => {
+        initSumKey(cat.id);
+        cat.items.forEach((item) => {
+          let rAda = 0;
+          let rHadir = 0;
+          divs.forEach((d) => {
+            const a = getVal(item.id, d.id, 'ada');
+            const h = getVal(item.id, d.id, 'hadir');
+            rAda += a;
+            rHadir += h;
+            sumByKey[cat.id].byDiv[d.id].ada += a;
+            sumByKey[cat.id].byDiv[d.id].hadir += h;
+            sumByKey['operasi'].byDiv[d.id].ada += a;
+            sumByKey['operasi'].byDiv[d.id].hadir += h;
+          });
+          rowTotals[item.id] = { ada: rAda, hadir: rHadir };
+          sumByKey[cat.id].totalAda += rAda;
+          sumByKey[cat.id].totalHadir += rHadir;
+          sumByKey['operasi'].totalAda += rAda;
+          sumByKey['operasi'].totalHadir += rHadir;
+        });
+      });
+
+      // 2. Admin (Section B)
+      stateObj.adminItems.forEach((item) => {
+        let rAda = 0;
+        let rHadir = 0;
+        divs.forEach((d) => {
+          const a = getVal(item.id, d.id, 'ada');
+          const h = getVal(item.id, d.id, 'hadir');
+          rAda += a;
+          rHadir += h;
+          sumByKey['admin'].byDiv[d.id].ada += a;
+          sumByKey['admin'].byDiv[d.id].hadir += h;
+        });
+        rowTotals[item.id] = { ada: rAda, hadir: rHadir };
+        sumByKey['admin'].totalAda += rAda;
+        sumByKey['admin'].totalHadir += rHadir;
+      });
+
+      // 3. Hadir (A + B)
+      divs.forEach((d) => {
+        sumByKey['hadir_ab'].byDiv[d.id].ada =
+          sumByKey['operasi'].byDiv[d.id].ada + sumByKey['admin'].byDiv[d.id].ada;
+        sumByKey['hadir_ab'].byDiv[d.id].hadir =
+          sumByKey['operasi'].byDiv[d.id].hadir + sumByKey['admin'].byDiv[d.id].hadir;
+      });
+      sumByKey['hadir_ab'].totalAda = sumByKey['operasi'].totalAda + sumByKey['admin'].totalAda;
+      sumByKey['hadir_ab'].totalHadir = sumByKey['operasi'].totalHadir + sumByKey['admin'].totalHadir;
+
+      // 4. Absent (Section C)
+      stateObj.absentItems.forEach((item) => {
+        let rAda = 0;
+        let rHadir = 0;
+        divs.forEach((d) => {
+          const a = getVal(item.id, d.id, 'ada');
+          const h = getVal(item.id, d.id, 'hadir');
+          rAda += a;
+          rHadir += h;
+          sumByKey['absent'].byDiv[d.id].ada += a;
+          sumByKey['absent'].byDiv[d.id].hadir += h;
+        });
+        rowTotals[item.id] = { ada: rAda, hadir: rHadir };
+        sumByKey['absent'].totalAda += rAda;
+        sumByKey['absent'].totalHadir += rHadir;
+      });
+
+      // 5. Overall (Hadir AB + Absent)
+      divs.forEach((d) => {
+        sumByKey['overall'].byDiv[d.id].ada =
+          sumByKey['hadir_ab'].byDiv[d.id].ada + sumByKey['absent'].byDiv[d.id].ada;
+        sumByKey['overall'].byDiv[d.id].hadir =
+          sumByKey['hadir_ab'].byDiv[d.id].hadir + sumByKey['absent'].byDiv[d.id].hadir;
+      });
+      sumByKey['overall'].totalAda = sumByKey['hadir_ab'].totalAda + sumByKey['absent'].totalAda;
+      sumByKey['overall'].totalHadir = sumByKey['hadir_ab'].totalHadir + sumByKey['absent'].totalHadir;
+
+      const denominator = sumByKey['overall'].totalAda || stateObj.buruhSemasa || 1;
+      const attendancePct = denominator > 0 ? (sumByKey['hadir_ab'].totalHadir / denominator) * 100 : 0;
+
+      return { rowTotals, sumByKey, attendancePct, denominator };
+    }
+
+    function recalculateAllTotals() {
+      // Read top metadata inputs
+      currentState.companyName = document.getElementById('InputCompanyName').value;
+      currentState.estateName = document.getElementById('InputEstateName').value;
+      currentState.luasBerhasil = parseFloat(document.getElementById('InputLuasBerhasil').value) || 0;
+      currentState.luasBelumBerhasil = parseFloat(document.getElementById('InputLuasBelumBerhasil').value) || 0;
+      currentState.luasTanamSemula = parseFloat(document.getElementById('InputLuasTanamSemula').value) || 0;
+      currentState.tarikh = document.getElementById('InputTarikh').value;
+      currentState.hari = document.getElementById('InputHari').value;
+      currentState.buruhSemasa = parseInt(document.getElementById('InputBuruhSemasa').value, 10) || 0;
+      currentState.tanTuai = parseFloat(document.getElementById('InputTanTuai').value) || 0;
+      currentState.hantaranKilang = parseFloat(document.getElementById('InputHantaranKilang').value) || 0;
+      currentState.backlog = parseFloat(document.getElementById('InputBacklog').value) || 0;
+      currentState.signPrepared = document.getElementById('InputSignPrepared').value;
+      currentState.signApproved = document.getElementById('InputSignApproved').value;
+
+      const jumlahLuas = currentState.luasBerhasil + currentState.luasBelumBerhasil + currentState.luasTanamSemula;
+      document.getElementById('DisplayJumlahLuas').textContent = jumlahLuas.toFixed(2) + ' HEK';
+
+      const snap = computeTotalsSnapshot(currentState);
+
+      // Update individual row totals
+      Object.keys(snap.rowTotals).forEach((rId) => {
+        const elAda = document.getElementById('row_tot_ada_' + rId);
+        const elHadir = document.getElementById('row_tot_hadir_' + rId);
+        if (elAda) elAda.textContent = snap.rowTotals[rId].ada;
+        if (elHadir) elHadir.textContent = snap.rowTotals[rId].hadir;
+      });
+
+      // Update summary rows
+      Object.keys(snap.sumByKey).forEach((k) => {
+        const sObj = snap.sumByKey[k];
+        currentState.divisions.forEach((d) => {
+          const elA = document.getElementById(`sum_${k}_${d.id}_ada`);
+          const elH = document.getElementById(`sum_${k}_${d.id}_hadir`);
+          if (elA) elA.textContent = sObj.byDiv[d.id].ada;
+          if (elH) elH.textContent = sObj.byDiv[d.id].hadir;
+        });
+        const totA = document.getElementById(`sum_${k}_total_ada`);
+        const totH = document.getElementById(`sum_${k}_total_hadir`);
+        if (totA) totA.textContent = sObj.totalAda;
+        if (totH) totH.textContent = sObj.totalHadir;
+      });
+
+      // Update Bottom Table (Attendance % & Ton/Ha)
+      const pctStr = snap.attendancePct.toFixed(2) + '%';
+      document.getElementById('CellAttendancePct').textContent = pctStr;
+      document.getElementById('CellAttendanceRatio').textContent =
+        `${snap.sumByKey['hadir_ab'].totalHadir} / ${snap.denominator}`;
+
+      const luasB = currentState.luasBerhasil > 0 ? currentState.luasBerhasil : 1;
+      const tuaiPerHa = currentState.luasBerhasil > 0 ? (currentState.tanTuai / luasB).toFixed(3) : '0.000';
+      const hantaranPerHa = currentState.luasBerhasil > 0 ? (currentState.hantaranKilang / luasB).toFixed(3) : '0.000';
+      const backlogPerHa = currentState.luasBerhasil > 0 ? (currentState.backlog / luasB).toFixed(3) : '0.000';
+
+      document.getElementById('CellTanTuaiPerHa').textContent = tuaiPerHa;
+      document.getElementById('CellHantaranPerHa').textContent = hantaranPerHa;
+      document.getElementById('CellBacklogPerHa').textContent = backlogPerHa;
+
+      // Update Top KPI Cards
+      document.getElementById('KpiTotalArea').textContent =
+        jumlahLuas.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' HEK';
+      document.getElementById('KpiAreaSub').textContent =
+        `Berhasil: ${currentState.luasBerhasil.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} HEK`;
+
+      document.getElementById('KpiOpHadir').textContent = snap.sumByKey['operasi'].totalHadir;
+      document.getElementById('KpiOpAda').textContent = snap.sumByKey['operasi'].totalAda;
+      document.getElementById('KpiTuaiSub').textContent =
+        `Pungutan: ${snap.sumByKey['cat_1'].totalHadir}/${snap.sumByKey['cat_1'].totalAda} hadir`;
+
+      document.getElementById('KpiAdminHadir').textContent = snap.sumByKey['admin'].totalHadir;
+      document.getElementById('KpiAdminAda').textContent = snap.sumByKey['admin'].totalAda;
+
+      document.getElementById('KpiTotalHadir').textContent = snap.sumByKey['hadir_ab'].totalHadir;
+      document.getElementById('KpiTotalKeseluruhan').textContent = snap.denominator;
+      const absentCount = Math.max(snap.sumByKey['absent'].totalAda, snap.sumByKey['absent'].totalHadir);
+      document.getElementById('KpiAbsentSub').textContent = `Ketidakhadiran (C): ${absentCount}`;
+
+      document.getElementById('KpiAttendancePct').textContent = pctStr;
+      document.getElementById('KpiAttendanceBar').style.width = Math.min(100, Math.max(0, snap.attendancePct)) + '%';
+
+      document.getElementById('KpiTanTuai').textContent = currentState.tanTuai.toFixed(2) + ' TAN';
+      document.getElementById('KpiTanPerHa').textContent =
+        `${tuaiPerHa} Tan/Ha • Backlog: ${currentState.backlog.toFixed(2)}`;
+    }
+
+    // ============================================================================
+    // 5. RENDER VEHICLE / MACHINERY MOVEMENT TABLE
+    // ============================================================================
+    function renderVehicleTable() {
+      const tbody = document.getElementById('VehicleTbody');
+      let html = '';
+
+      currentState.vehicles.forEach((v, idx) => {
+        const badgeColor =
+          v.status === 'Rosak'
+            ? 'bg-rose-100 text-rose-800 border-rose-300'
+            : v.status === 'Cuti / Rehat'
+            ? 'bg-amber-100 text-amber-800 border-amber-300'
+            : 'bg-emerald-100 text-emerald-800 border-emerald-300';
+
+        html += `
+          <tr class="hover:bg-slate-50">
+            <td class="text-center font-bold text-slate-600">${idx + 1}</td>
+            <td class="p-1">
+              <input type="text" data-vid="${v.id}" data-vfield="name" value="${escapeHtml(v.name)}"
+                class="w-full font-bold text-slate-900 bg-transparent px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-emerald-600 focus:bg-yellow-50 focus:outline-none" />
+            </td>
+            <td class="p-1">
+              <input type="text" data-vid="${v.id}" data-vfield="blok" value="${escapeHtml(v.blok)}"
+                class="w-full text-center font-bold text-blue-800 bg-blue-50/50 px-2 py-1 rounded border border-transparent hover:border-blue-300 focus:border-emerald-600 focus:bg-yellow-50 focus:outline-none" />
+            </td>
+            <td class="p-1">
+              <input type="text" data-vid="${v.id}" data-vfield="task" value="${escapeHtml(v.task)}"
+                class="w-full font-medium text-slate-800 bg-transparent px-2 py-1 rounded border border-transparent hover:border-slate-300 focus:border-emerald-600 focus:bg-yellow-50 focus:outline-none" />
+            </td>
+            <td class="p-1 text-center">
+              <select data-vid="${v.id}" data-vfield="status"
+                class="text-xs font-bold px-2 py-1 rounded border ${badgeColor} focus:outline-none">
+                <option value="Beroperasi" ${v.status === 'Beroperasi' ? 'selected' : ''}>Beroperasi</option>
+                <option value="Cuti / Rehat" ${v.status === 'Cuti / Rehat' ? 'selected' : ''}>Cuti / Rehat</option>
+                <option value="Rosak" ${v.status === 'Rosak' ? 'selected' : ''}>Rosak</option>
+              </select>
+            </td>
+            <td class="text-center no-print no-screenshot">
+              <button type="button" data-del-vid="${v.id}" class="text-rose-600 hover:text-rose-800 font-bold px-2 py-0.5 rounded hover:bg-rose-50 transition" title="Padam baris jentera">
+                ✕
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+
+      tbody.querySelectorAll('input[data-vid], select[data-vid]').forEach((el) => {
+        el.addEventListener('input', (e) => {
+          const vid = e.target.getAttribute('data-vid');
+          const field = e.target.getAttribute('data-vfield');
+          const target = currentState.vehicles.find((x) => x.id === vid);
+          if (target && field) {
+            target[field] = e.target.value;
+            if (field === 'status') renderVehicleTable();
+          }
+        });
+      });
+
+      tbody.querySelectorAll('button[data-del-vid]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const vid = e.currentTarget.getAttribute('data-del-vid');
+          currentState.vehicles = currentState.vehicles.filter((x) => x.id !== vid);
+          renderVehicleTable();
+          showToast('Kenderaan/jentera telah dipadam.');
+        });
+      });
+    }
+
+    // ============================================================================
+    // 6. RENDER ARCHIVE / COLLECTED RECORDS TABLE
+    // ============================================================================
+    function renderArchiveSection() {
+      const tbody = document.getElementById('ArchiveTbody');
+      let html = '';
+
+      let totalPct = 0;
+      let totalTuai = 0;
+      let totalHantaran = 0;
+
+      savedRecords.forEach((rec, idx) => {
+        const snap = computeTotalsSnapshot(rec);
+        const luas = (Number(rec.luasBerhasil) || 0) + (Number(rec.luasBelumBerhasil) || 0) + (Number(rec.luasTanamSemula) || 0);
+        const opStr = `${snap.sumByKey['operasi'].totalHadir} / ${snap.sumByKey['operasi'].totalAda}`;
+        const admStr = `${snap.sumByKey['admin'].totalHadir} / ${snap.sumByKey['admin'].totalAda}`;
+        const hadirCount = snap.sumByKey['hadir_ab'].totalHadir;
+        const absentCount = Math.max(snap.sumByKey['absent'].totalAda, snap.sumByKey['absent'].totalHadir);
+        const activeVehicles = (rec.vehicles || []).filter((v) => v.status === 'Beroperasi').length;
+
+        totalPct += snap.attendancePct;
+        totalTuai += Number(rec.tanTuai) || 0;
+        totalHantaran += Number(rec.hantaranKilang) || 0;
+
+        html += `
+          <tr class="hover:bg-slate-50">
+            <td class="text-center font-bold">${idx + 1}</td>
+            <td class="px-2 font-bold text-slate-900">${escapeHtml(rec.tarikh)} <span class="text-slate-500 font-normal">(${escapeHtml(rec.hari)})</span></td>
+            <td class="px-2 font-semibold text-emerald-900">${escapeHtml(rec.estateName)}</td>
+            <td class="text-center">${luas.toFixed(2)}</td>
+            <td class="text-center font-semibold">${opStr}</td>
+            <td class="text-center font-semibold">${admStr}</td>
+            <td class="text-center font-extrabold text-emerald-700">${hadirCount}</td>
+            <td class="text-center font-bold text-rose-700">${absentCount}</td>
+            <td class="text-center font-extrabold text-amber-700">${snap.attendancePct.toFixed(2)}%</td>
+            <td class="text-center font-bold">${(Number(rec.tanTuai) || 0).toFixed(2)}</td>
+            <td class="text-center font-bold">${(Number(rec.hantaranKilang) || 0).toFixed(2)}</td>
+            <td class="text-center">${activeVehicles} / ${(rec.vehicles || []).length}</td>
+            <td class="text-center space-x-1 whitespace-nowrap">
+              <button type="button" data-load-idx="${idx}" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1 rounded text-[11px] transition">
+                Buka / Edit
+              </button>
+              <button type="button" data-del-idx="${idx}" class="bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold px-2 py-1 rounded text-[11px] transition">
+                Padam
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+
+      const count = savedRecords.length;
+      document.getElementById('AggTotalRecords').textContent = `${count} Rekod`;
+      document.getElementById('AggAvgAttendance').textContent = count > 0 ? (totalPct / count).toFixed(2) + '%' : '0.00%';
+      document.getElementById('AggTotalTanTuai').textContent = totalTuai.toFixed(2) + ' TAN';
+      document.getElementById('AggTotalHantaran').textContent = totalHantaran.toFixed(2) + ' TAN';
+
+      tbody.querySelectorAll('button[data-load-idx]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const idx = parseInt(e.currentTarget.getAttribute('data-load-idx'), 10);
+          if (savedRecords[idx]) {
+            currentState = JSON.parse(JSON.stringify(savedRecords[idx]));
+            populateFormFromState();
+            switchTab('muster');
+            showToast(`Rekod ${currentState.tarikh} (${currentState.estateName}) telah dimuatkan.`);
+          }
+        });
+      });
+
+      tbody.querySelectorAll('button[data-del-idx]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const idx = parseInt(e.currentTarget.getAttribute('data-del-idx'), 10);
+          if (savedRecords.length <= 1) {
+            showToast('Sekurang-kurangnya 1 rekod perlu dikekalkan.');
+            return;
+          }
+          savedRecords.splice(idx, 1);
+          persistSavedRecords();
+          renderArchiveSection();
+          showToast('Rekod telah dipadam daripada senarai terkumpul.');
+        });
+      });
+    }
+
+    // ============================================================================
+    // 7. POPULATE FORM & SWITCH TABS
+    // ============================================================================
+    function populateFormFromState() {
+      document.getElementById('InputCompanyName').value = currentState.companyName || '';
+      document.getElementById('InputEstateName').value = currentState.estateName || '';
+      document.getElementById('InputLuasBerhasil').value = currentState.luasBerhasil ?? 0;
+      document.getElementById('InputLuasBelumBerhasil').value = currentState.luasBelumBerhasil ?? 0;
+      document.getElementById('InputLuasTanamSemula').value = currentState.luasTanamSemula ?? 0;
+      document.getElementById('InputTarikh').value = currentState.tarikh || '';
+      document.getElementById('InputHari').value = currentState.hari || '';
+      document.getElementById('InputBuruhSemasa').value = currentState.buruhSemasa ?? 0;
+      document.getElementById('InputTanTuai').value = currentState.tanTuai ?? 0;
+      document.getElementById('InputHantaranKilang').value = currentState.hantaranKilang ?? 0;
+      document.getElementById('InputBacklog').value = currentState.backlog ?? 0;
+      document.getElementById('InputSignPrepared').value = currentState.signPrepared || '';
+      document.getElementById('InputSignApproved').value = currentState.signApproved || '';
+
+      renderMusterHeaders();
+      renderMusterBody();
+      renderVehicleTable();
+      recalculateAllTotals();
+    }
+
+    function switchTab(tabName) {
+      currentTab = tabName;
+      const secMuster = document.getElementById('SectionMuster');
+      const secJentera = document.getElementById('SectionJentera');
+      const secArchive = document.getElementById('SectionArchive');
+      const captureArea = document.getElementById('CaptureArea');
+
+      document.querySelectorAll('.tab-btn').forEach((btn) => {
+        const t = btn.getAttribute('data-tab');
+        if (t === tabName) {
+          btn.className = 'tab-btn bg-white text-emerald-950 font-bold text-xs px-3 py-1.5 rounded-md shadow-sm transition flex items-center gap-1.5';
+        } else {
+          btn.className = 'tab-btn bg-emerald-800/70 hover:bg-emerald-800 text-emerald-100 font-semibold text-xs px-3 py-1.5 rounded-md transition flex items-center gap-1.5';
+        }
+      });
+
+      if (tabName === 'muster') {
+        captureArea.classList.remove('hidden');
+        secMuster.classList.remove('hidden');
+        secJentera.classList.add('hidden');
+        secArchive.classList.add('hidden');
+      } else if (tabName === 'jentera') {
+        captureArea.classList.remove('hidden');
+        secMuster.classList.add('hidden');
+        secJentera.classList.remove('hidden');
+        secJentera.classList.remove('mt-6', 'pt-5', 'border-t-2');
+        secArchive.classList.add('hidden');
+      } else if (tabName === 'both') {
+        captureArea.classList.remove('hidden');
+        secMuster.classList.remove('hidden');
+        secJentera.classList.remove('hidden');
+        secJentera.classList.add('mt-6', 'pt-5', 'border-t-2');
+        secArchive.classList.add('hidden');
+      } else if (tabName === 'archive') {
+        captureArea.classList.add('hidden');
+        secArchive.classList.remove('hidden');
+        renderArchiveSection();
+      }
+    }
+
+    // ============================================================================
+    // 8. EXPORT CSV, JSON, PRINT & SCREENSHOT PNG
+    // ============================================================================
+    function exportCurrentToCsv() {
+      recalculateAllTotals();
+      const snap = computeTotalsSnapshot(currentState);
+      const lines = [];
+      const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+
+      lines.push([esc(currentState.companyName)].join(','));
+      lines.push([esc(currentState.estateName), '', esc('TARIKH:'), esc(currentState.tarikh), esc('HARI:'), esc(currentState.hari)].join(','));
+      lines.push([
+        esc('LUAS BERHASIL (HEK):'), currentState.luasBerhasil,
+        esc('LUAS BELUM BERHASIL (HEK):'), currentState.luasBelumBerhasil,
+        esc('LUAS TANAM SEMULA (HEK):'), currentState.luasTanamSemula,
+        esc('BIL BURUH SEMASA:'), currentState.buruhSemasa
+      ].join(','));
+      lines.push('');
+
+      // Header row 1
+      const h1 = ['BIL', 'JENIS PEKERJAAN'];
+      const h2 = ['', ''];
+      currentState.divisions.forEach((d) => {
+        h1.push(esc(`${d.supervisor} (${d.blockName})`), '');
+        h2.push('ADA', 'HADIR');
+        if (d.hasBlok) {
+          h1.push('');
+          h2.push('BLOK');
+        }
+      });
+      h1.push('JUMLAH BESAR', '');
+      h2.push('ADA', 'HADIR');
+      lines.push(h1.join(','));
+      lines.push(h2.join(','));
+
+      const pushItemRow = (bil, item) => {
+        const row = [esc(bil), esc(item.label)];
+        currentState.divisions.forEach((d) => {
+          const c = getCellObj(item.id, d.id);
+          row.push(c.ada || 0, c.hadir || 0);
+          if (d.hasBlok) row.push(esc(c.blok || ''));
+        });
+        const rt = snap.rowTotals[item.id] || { ada: 0, hadir: 0 };
+        row.push(rt.ada, rt.hadir);
+        lines.push(row.join(','));
+      };
+
+      const pushSumRow = (bil, label, key) => {
+        const row = [esc(bil), esc(label)];
+        const sObj = snap.sumByKey[key];
+        currentState.divisions.forEach((d) => {
+          row.push(sObj.byDiv[d.id].ada, sObj.byDiv[d.id].hadir);
+          if (d.hasBlok) row.push('');
+        });
+        row.push(sObj.totalAda, sObj.totalHadir);
+        lines.push(row.join(','));
+      };
+
+      lines.push(['A', 'OPERASI LADANG'].join(','));
+      currentState.categories.forEach((cat) => {
+        pushSumRow(cat.num, cat.title, cat.id);
+        cat.items.forEach((it) => pushItemRow('', it));
+      });
+      pushSumRow('', 'JUMLAH PEKERJA OPERASI', 'operasi');
+
+      lines.push(['B', 'PENTADBIRAN'].join(','));
+      currentState.adminItems.forEach((it, idx) => pushItemRow(idx + 1, it));
+      pushSumRow('', 'JUMLAH PEKERJA PENTADBIRAN', 'admin');
+      pushSumRow('', 'JUMLAH PEKERJA HADIR', 'hadir_ab');
+
+      lines.push(['C', 'KETIDAKHADIRAN'].join(','));
+      currentState.absentItems.forEach((it, idx) => pushItemRow(idx + 1, it));
+      pushSumRow('', 'JUMLAH KETIDAKHADIRAN', 'absent');
+      pushSumRow('', 'JUMLAH KESELURUHAN PEKERJA', 'overall');
+
+      lines.push('');
+      lines.push(['PENCAPAIAN KEHADIRAN (%)', snap.attendancePct.toFixed(2) + '%'].join(','));
+      lines.push(['JUMLAH TAN TUAI (HARI SEBELUMNYA)', currentState.tanTuai].join(','));
+      lines.push(['HANTARAN KE KILANG (TAN)', currentState.hantaranKilang].join(','));
+      lines.push(['BACKLOG (TAN)', currentState.backlog].join(','));
+
+      lines.push('');
+      lines.push(['PERGERAKAN KENDERAAN / JENTERA HARIAN'].join(','));
+      lines.push(['BIL', 'KENDERAAN / JENTERA', 'KAW. KERJA (BLOK)', 'JENIS KERJA', 'STATUS'].join(','));
+      currentState.vehicles.forEach((v, i) => {
+        lines.push([i + 1, esc(v.name), esc(v.blok), esc(v.task), esc(v.status)].join(','));
+      });
+
+      downloadBlob(lines.join('\n'), `Muster_Chit_${currentState.tarikh}.csv`, 'text/csv;charset=utf-8;');
+      showToast('Fail CSV (Excel) berjaya dimuat turun!');
+    }
+
+    function exportAllArchiveToCsv() {
+      const lines = [];
+      const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+      lines.push([
+        'BIL', 'TARIKH', 'HARI', 'NAMA LADANG', 'LUAS BERHASIL (HEK)', 'JUMLAH LUAS (HEK)',
+        'BURUH SEMASA', 'OPERASI ADA', 'OPERASI HADIR', 'PENTADBIRAN ADA', 'PENTADBIRAN HADIR',
+        'JUMLAH HADIR', 'JUMLAH TAK HADIR', 'PENCAPAIAN KEHADIRAN (%)',
+        'TAN TUAI', 'HANTARAN KILANG', 'BACKLOG', 'JENTERA BEROPERASI'
+      ].join(','));
+
+      savedRecords.forEach((rec, idx) => {
+        const snap = computeTotalsSnapshot(rec);
+        const luas = (Number(rec.luasBerhasil) || 0) + (Number(rec.luasBelumBerhasil) || 0) + (Number(rec.luasTanamSemula) || 0);
+        const absentCount = Math.max(snap.sumByKey['absent'].totalAda, snap.sumByKey['absent'].totalHadir);
+        const activeVehicles = (rec.vehicles || []).filter((v) => v.status === 'Beroperasi').length;
+        lines.push([
+          idx + 1,
+          esc(rec.tarikh),
+          esc(rec.hari),
+          esc(rec.estateName),
+          rec.luasBerhasil,
+          luas.toFixed(2),
+          rec.buruhSemasa,
+          snap.sumByKey['operasi'].totalAda,
+          snap.sumByKey['operasi'].totalHadir,
+          snap.sumByKey['admin'].totalAda,
+          snap.sumByKey['admin'].totalHadir,
+          snap.sumByKey['hadir_ab'].totalHadir,
+          absentCount,
+          snap.attendancePct.toFixed(2) + '%',
+          rec.tanTuai,
+          rec.hantaranKilang,
+          rec.backlog,
+          activeVehicles
+        ].join(','));
+      });
+
+      downloadBlob(lines.join('\n'), `Ringkasan_Terkumpul_Muster_Chit.csv`, 'text/csv;charset=utf-8;');
+      showToast('Ringkasan terkumpul CSV berjaya dimuat turun!');
+    }
+
+    function downloadBlob(content, filename, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    async function downloadScreenshotPng() {
+      if (currentTab === 'archive') {
+        switchTab('both');
+      }
+      const target = document.getElementById('CaptureArea');
+      showToast('Menjana imej tangkapan skrin (PNG)...');
+
+      if (typeof window.html2canvas === 'function') {
+        try {
+          const prevTransform = target.style.transform;
+          target.style.transform = 'none';
+          const canvas = await window.html2canvas(target, {
+            scale: 2,
+            backgroundColor: '#ffffff',
+            useCORS: true,
+            logging: false
+          });
+          target.style.transform = prevTransform;
+          const dataUrl = canvas.toDataURL('image/png');
+          const a = document.createElement('a');
+          a.href = dataUrl;
+          a.download = `Muster_Chit_${currentState.tarikh || 'Ladang'}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          showToast('Tangkapan skrin PNG berjaya dimuat turun!');
+          return;
+        } catch (err) {
+          console.warn('html2canvas error, masuk ke mod tangkap skrin bersih:', err);
+        }
+      }
+      // Fallback: activate Clean Screenshot Mode
+      document.body.classList.add('screenshot-mode');
+      showToast('Mod Paparan Tangkap Skrin diaktifkan.');
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // ============================================================================
+    // 9. EVENT LISTENERS & INITIALIZATION
+    // ============================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedRecords();
+      populateFormFromState();
+
+      // Tab buttons
+      document.querySelectorAll('.tab-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          switchTab(btn.getAttribute('data-tab'));
+        });
+      });
+
+      // Top metadata inputs live recalculation
+      [
+        'InputCompanyName', 'InputEstateName', 'InputLuasBerhasil', 'InputLuasBelumBerhasil',
+        'InputLuasTanamSemula', 'InputHari', 'InputBuruhSemasa', 'InputTanTuai',
+        'InputHantaranKilang', 'InputBacklog', 'InputSignPrepared', 'InputSignApproved'
+      ].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', recalculateAllTotals);
+      });
+
+      // Auto-update Day name when Date changes
+      document.getElementById('InputTarikh').addEventListener('change', (e) => {
+        const val = e.target.value;
+        if (val) {
+          const dt = new Date(val + 'T00:00:00');
+          if (!isNaN(dt.getTime())) {
+            document.getElementById('InputHari').value = DAYS_MS[dt.getDay()];
+          }
+        }
+        recalculateAllTotals();
+      });
+
+      // Auto-calculate backlog when Tan Tuai or Hantaran Kilang changes
+      const updateBacklogAuto = () => {
+        const tuai = parseFloat(document.getElementById('InputTanTuai').value) || 0;
+        const hantar = parseFloat(document.getElementById('InputHantaranKilang').value) || 0;
+        const diff = Math.max(0, tuai - hantar);
+        document.getElementById('InputBacklog').value = diff.toFixed(2);
+        recalculateAllTotals();
+      };
+      document.getElementById('InputTanTuai').addEventListener('input', updateBacklogAuto);
+      document.getElementById('InputHantaranKilang').addEventListener('input', updateBacklogAuto);
+
+      // Preset Selector
+      document.getElementById('PresetSelect').addEventListener('change', (e) => {
+        currentState = buildPresetState(e.target.value);
+        populateFormFromState();
+        showToast('Pratetap lembaran kerja berjaya dimuatkan!');
+      });
+
+      // Set Hadir = Ada button
+      document.getElementById('BtnMatchHadirToAda').addEventListener('click', () => {
+        const applyItems = (items) => {
+          items.forEach((it) => {
+            currentState.divisions.forEach((d) => {
+              const c = getCellObj(it.id, d.id);
+              c.hadir = c.ada;
+            });
+          });
+        };
+        currentState.categories.forEach((cat) => applyItems(cat.items));
+        applyItems(currentState.adminItems);
+        renderMusterBody();
+        recalculateAllTotals();
+        showToast('Semua nilai HADIR telah disamakan dengan nilai ADA.');
+      });
+
+      // Reset Numbers button
+      document.getElementById('BtnResetNumbers').addEventListener('click', () => {
+        currentState.cells = {};
+        renderMusterBody();
+        recalculateAllTotals();
+        showToast('Semua angka dalam jadual telah dikosongkan kepada 0.');
+      });
+
+      // Add Custom Job Row
+      document.getElementById('BtnAddJobRow').addEventListener('click', () => {
+        const catTarget = document.getElementById('NewRowCategory').value;
+        const labelInput = document.getElementById('NewRowLabel');
+        const label = labelInput.value.trim();
+        if (!label) {
+          showToast('Sila masukkan nama jenis pekerjaan baharu.');
+          labelInput.focus();
+          return;
+        }
+        const newId = 'custom_' + Date.now();
+        if (catTarget === 'sec_B') {
+          currentState.adminItems.push({ id: newId, label });
+        } else if (catTarget === 'sec_C') {
+          currentState.absentItems.push({ id: newId, label });
+        } else {
+          const cat = currentState.categories.find((c) => c.id === catTarget);
+          if (cat) cat.items.push({ id: newId, label });
+        }
+        labelInput.value = '';
+        renderMusterBody();
+        recalculateAllTotals();
+        showToast(`Baris kerja "${label}" berjaya ditambah!`);
+      });
+
+      // Add Vehicle Row
+      document.getElementById('BtnAddVehicle').addEventListener('click', () => {
+        const nameEl = document.getElementById('NewVehicleName');
+        const blokEl = document.getElementById('NewVehicleBlok');
+        const taskEl = document.getElementById('NewVehicleTask');
+        const name = nameEl.value.trim();
+        if (!name) {
+          showToast('Sila masukkan nama kenderaan atau jentera.');
+          nameEl.focus();
+          return;
+        }
+        currentState.vehicles.push({
+          id: 'v_' + Date.now(),
+          name,
+          blok: blokEl.value.trim() || '-',
+          task: taskEl.value.trim() || 'Kerja Am',
+          status: 'Beroperasi'
+        });
+        nameEl.value = '';
+        blokEl.value = '';
+        taskEl.value = '';
+        renderVehicleTable();
+        showToast(`Jentera "${name}" berjaya ditambah!`);
+      });
+
+      // Save Daily Record to Archive
+      document.getElementById('BtnSaveRecord').addEventListener('click', () => {
+        recalculateAllTotals();
+        const copy = JSON.parse(JSON.stringify(currentState));
+        copy.id = 'rec_' + Date.now();
+        const existingIdx = savedRecords.findIndex(
+          (r) => r.tarikh === copy.tarikh && r.estateName === copy.estateName
+        );
+        if (existingIdx >= 0) {
+          savedRecords[existingIdx] = copy;
+          showToast(`Rekod bagi ${copy.tarikh} (${copy.estateName}) telah dikemas kini!`);
+        } else {
+          savedRecords.unshift(copy);
+          showToast(`Rekod baharu bagi ${copy.tarikh} telah disimpan ke pengumpulan data!`);
+        }
+        persistSavedRecords();
+        if (currentTab === 'archive') renderArchiveSection();
+      });
+
+      // Screenshot Clean Mode Toggles
+      document.getElementById('BtnScreenshotMode').addEventListener('click', () => {
+        if (currentTab === 'archive') switchTab('both');
+        document.body.classList.add('screenshot-mode');
+      });
+
+      document.getElementById('BtnExitScreenshotMode').addEventListener('click', () => {
+        document.body.classList.remove('screenshot-mode');
+        document.getElementById('CaptureArea').style.transform = 'none';
+        document.getElementById('ZoomSelect').value = '1';
+      });
+
+      document.getElementById('ZoomSelect').addEventListener('change', (e) => {
+        const scale = parseFloat(e.target.value) || 1;
+        const area = document.getElementById('CaptureArea');
+        area.style.transform = scale === 1 ? 'none' : `scale(${scale})`;
+      });
+
+      // Download PNG Screenshot
+      document.getElementById('BtnDownloadPng').addEventListener('click', downloadScreenshotPng);
+      document.getElementById('BtnDownloadPngFromBanner').addEventListener('click', downloadScreenshotPng);
+
+      // Print / Save PDF
+      document.getElementById('BtnPrint').addEventListener('click', () => {
+        if (currentTab === 'archive') switchTab('both');
+        window.print();
+      });
+
+      // Export CSV, HTML & JSON
+      document.getElementById('BtnExportCsv').addEventListener('click', exportCurrentToCsv);
+      document.getElementById('BtnDownloadHtml').addEventListener('click', () => {
+        const htmlSource = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        downloadBlob(htmlSource, 'index.html', 'text/html;charset=utf-8;');
+        showToast('Fail index.html telah dimuat turun! Sedia untuk dimuat naik ke yatotet.github.io');
+      });
+      document.getElementById('BtnExportAllCsv').addEventListener('click', exportAllArchiveToCsv);
+      document.getElementById('BtnExportJson').addEventListener('click', () => {
+        downloadBlob(JSON.stringify(savedRecords, null, 2), 'Sandaran_Muster_Chit_FGV.json', 'application/json');
+        showToast('Fail sandaran JSON berjaya dimuat turun!');
+      });
+
+      document.getElementById('InputImportJson').addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          try {
+            const parsed = JSON.parse(ev.target.result);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              savedRecords = parsed;
+              persistSavedRecords();
+              currentState = JSON.parse(JSON.stringify(savedRecords[0]));
+              populateFormFromState();
+              renderArchiveSection();
+              showToast(`Berjaya memuat naik ${parsed.length} rekod Muster Chit!`);
+            }
+          } catch (err) {
+            showToast('Format fail JSON tidak sah.');
+          }
+        };
+        reader.readAsText(file);
+      });
+    });
+  </script>
+</body>
+</html>
