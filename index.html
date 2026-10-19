@@ -2,7 +2,14 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta name="theme-color" content="#022c22" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="e-Muster FGV" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
   <title>Sistem e-Muster Chit & Pergerakan Jentera Ladang FGVPM</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -274,6 +281,11 @@
         <button type="button" id="BtnDownloadHtml" class="inline-flex items-center gap-1.5 bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold px-3 py-2 rounded-lg shadow transition" title="Muat turun fail index.html untuk dimuat naik terus ke GitHub Pages (yatotet.github.io)">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
           <span>Muat Turun index.html (GitHub)</span>
+        </button>
+
+        <button type="button" id="BtnOpenInstallModal" class="inline-flex items-center gap-1.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-md ring-2 ring-rose-300/50 transition" title="Pasang sebagai Aplikasi (App) di Telefon Android, iPhone, atau PC">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          <span>Pasang Jadi App (Telefon/PC)</span>
         </button>
       </div>
     </div>
@@ -658,6 +670,91 @@
     </section>
 
   </main>
+
+  <!-- PWA Install & APK Guide Modal -->
+  <div id="InstallAppModal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-sm items-center justify-center p-3 no-print no-screenshot">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-2xl w-full overflow-hidden">
+      <div class="bg-emerald-950 text-white px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-emerald-600 flex items-center justify-center font-extrabold text-sm">APP</div>
+          <div>
+            <h3 class="font-extrabold text-sm sm:text-base">Pasang Sistem e-Muster Chit Sebagai Aplikasi (App)</h3>
+            <p class="text-[11px] text-emerald-200">Boleh dipasang terus di skrin utama telefon (Android/iOS), PC, atau dijadikan fail APK</p>
+          </div>
+        </div>
+        <button type="button" id="BtnCloseInstallModal" class="text-slate-300 hover:text-white font-bold text-lg px-2 py-0.5 rounded">✕</button>
+      </div>
+
+      <div class="p-5 space-y-4 text-xs text-slate-700 max-h-[80vh] overflow-y-auto">
+        <!-- Native One-Click Install Banner (Shown automatically when browser supports beforeinstallprompt) -->
+        <div id="NativeInstallBanner" class="hidden bg-emerald-50 border-2 border-emerald-500 rounded-xl p-3.5 items-center justify-between gap-3">
+          <div>
+            <div class="font-extrabold text-emerald-950 text-sm">Pelayar anda menyokong pemasangan terus!</div>
+            <div class="text-emerald-800 text-xs mt-0.5">Klik butang di sebelah untuk memasang ikon aplikasi e-Muster Chit terus ke peranti anda.</div>
+          </div>
+          <button type="button" id="BtnTriggerNativeInstall" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-4 py-2 rounded-lg shadow whitespace-nowrap transition">
+            Pasang App Sekarang
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <!-- Method 1: Android & iPhone PWA -->
+          <div class="border border-slate-200 rounded-xl p-3.5 bg-slate-50 space-y-2">
+            <div class="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-900 font-bold px-2.5 py-0.5 rounded-full text-[11px]">
+              1. Telefon (Android & iPhone)
+            </div>
+            <h4 class="font-extrabold text-slate-900 text-xs">Pasang Terus dari Pelayar (PWA)</h4>
+            <ol class="list-decimal list-inside space-y-1.5 text-[11px] text-slate-600 leading-relaxed">
+              <li>Muat naik fail <strong>index.html</strong> ke GitHub Pages anda (<strong>yatotet.github.io</strong>).</li>
+              <li>Buka <strong>https://yatotet.github.io</strong> di telefon menggunakan <strong>Chrome</strong> (Android) atau <strong>Safari</strong> (iPhone).</li>
+              <li>Tekan menu <strong>⋮ (3 titik)</strong> di Chrome dan pilih <strong>"Install app" / "Add to Home screen"</strong> (atau tekan <strong>Share ➔ Add to Home Screen</strong> di iPhone).</li>
+              <li>Ikon <strong>e-Muster FGV</strong> akan muncul di skrin telefon seperti aplikasi sebenar (skrin penuh tanpa bar URL)!</li>
+            </ol>
+          </div>
+
+          <!-- Method 2: Convert to Android .APK -->
+          <div class="border border-slate-200 rounded-xl p-3.5 bg-slate-50 space-y-2">
+            <div class="inline-flex items-center gap-1.5 bg-indigo-100 text-indigo-900 font-bold px-2.5 py-0.5 rounded-full text-[11px]">
+              2. Fail .APK Android
+            </div>
+            <h4 class="font-extrabold text-slate-900 text-xs">Tukar Jadi Fail Pemasang (.APK)</h4>
+            <ol class="list-decimal list-inside space-y-1.5 text-[11px] text-slate-600 leading-relaxed">
+              <li>Selepas laman <strong>https://yatotet.github.io</strong> aktif, buka laman percuma <strong>PWABuilder.com</strong> atau <strong>WebIntoApp.com</strong>.</li>
+              <li>Masukkan URL <strong>https://yatotet.github.io</strong> atau muat naik fail <strong>index.html</strong> anda.</li>
+              <li>Klik <strong>Package for Store / Generate APK</strong> untuk memuat turun fail <strong>.apk</strong> yang boleh dikongsi terus melalui WhatsApp.</li>
+            </ol>
+          </div>
+
+          <!-- Method 3: PC / Laptop App -->
+          <div class="border border-slate-200 rounded-xl p-3.5 bg-slate-50 space-y-2">
+            <div class="inline-flex items-center gap-1.5 bg-amber-100 text-amber-900 font-bold px-2.5 py-0.5 rounded-full text-[11px]">
+              3. Komputer / Laptop (PC)
+            </div>
+            <h4 class="font-extrabold text-slate-900 text-xs">Aplikasi Desktop Windows / Mac</h4>
+            <ol class="list-decimal list-inside space-y-1.5 text-[11px] text-slate-600 leading-relaxed">
+              <li>Buka pautan aplikasi di pelayar <strong>Google Chrome</strong> atau <strong>Microsoft Edge</strong>.</li>
+              <li>Klik ikon <strong>Pasang (komputer dengan anak panah)</strong> di sebelah kanan bar alamat URL.</li>
+              <li>Aplikasi akan dipasang terus ke <strong>Desktop & Taskbar</strong> dan boleh dibuka walaupun tanpa internet (luar talian).</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="bg-slate-100 border border-slate-200 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2">
+          <div class="text-[11px] text-slate-600">
+            <strong>Sedia untuk dimuat naik:</strong> Aplikasi ini telah dilengkapi konfigurasi <em>Web App Manifest</em> dan ikon aplikasi rasmi.
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" id="BtnDownloadHtmlFromModal" class="bg-teal-600 hover:bg-teal-500 text-white font-bold px-3 py-1.5 rounded-lg transition">
+              Muat Turun index.html
+            </button>
+            <button type="button" id="BtnDoneInstallModal" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-3 py-1.5 rounded-lg transition">
+              Tutup
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Toast Notification -->
   <div id="ToastBox" class="fixed bottom-4 right-4 z-50 hidden bg-slate-900 text-white px-4 py-2.5 rounded-lg shadow-xl border border-slate-700 text-xs font-semibold items-center gap-2 no-print no-screenshot">
@@ -2076,6 +2173,7 @@
     // ============================================================================
     // 9. EVENT LISTENERS & INITIALIZATION
     // ============================================================================
+    if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {})); }
     window.addEventListener('DOMContentLoaded', () => {
       loadSavedRecords();
       populateFormFromState();
@@ -2251,10 +2349,76 @@
 
       // Export CSV, HTML & JSON
       document.getElementById('BtnExportCsv').addEventListener('click', exportCurrentToCsv);
-      document.getElementById('BtnDownloadHtml').addEventListener('click', () => {
+      const downloadSelfHtml = () => {
         const htmlSource = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
         downloadBlob(htmlSource, 'index.html', 'text/html;charset=utf-8;');
         showToast('Fail index.html telah dimuat turun! Sedia untuk dimuat naik ke yatotet.github.io');
+      };
+      document.getElementById('BtnDownloadHtml').addEventListener('click', downloadSelfHtml);
+      document.getElementById('BtnDownloadHtmlFromModal').addEventListener('click', downloadSelfHtml);
+
+      // PWA Dynamic Manifest & Install Prompt Handling
+      try {
+        const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="36" fill="#064e3b"/><rect x="20" y="20" width="152" height="152" rx="26" fill="#10b981"/><rect x="30" y="30" width="132" height="132" rx="20" fill="#064e3b"/><text x="96" y="112" font-family="Arial,sans-serif" font-size="48" font-weight="bold" fill="#fde047" text-anchor="middle">FGV</text></svg>`;
+        const iconDataUri = 'data:image/svg+xml;base64,' + btoa(svgIcon);
+        const manifestObj = {
+          name: 'Sistem e-Muster Chit & Pergerakan Jentera Ladang FGVPM',
+          short_name: 'e-Muster FGV',
+          description: 'Aplikasi Laporan Harian Pekerja Ladang (Muster Chit) & Pergerakan Jentera',
+          start_url: './index.html',
+          display: 'standalone',
+          orientation: 'any',
+          background_color: '#f1f5f9',
+          theme_color: '#022c22',
+          icons: [
+            { src: iconDataUri, sizes: '192x192', type: 'image/svg+xml', purpose: 'any maskable' },
+            { src: iconDataUri, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }
+          ]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
+        const manifestUrl = URL.createObjectURL(manifestBlob);
+        const linkEl = document.createElement('link');
+        linkEl.rel = 'manifest';
+        linkEl.href = manifestUrl;
+        document.head.appendChild(linkEl);
+      } catch (e) {
+        console.warn('PWA manifest init skipped:', e);
+      }
+
+      let deferredInstallPrompt = null;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        const banner = document.getElementById('NativeInstallBanner');
+        if (banner) {
+          banner.classList.remove('hidden');
+          banner.classList.add('flex');
+        }
+      });
+
+      const installModal = document.getElementById('InstallAppModal');
+      const openInstallModal = () => {
+        if (deferredInstallPrompt) {
+          deferredInstallPrompt.prompt();
+          deferredInstallPrompt.userChoice.then(() => {
+            deferredInstallPrompt = null;
+          });
+        }
+        installModal.classList.remove('hidden');
+        installModal.classList.add('flex');
+      };
+      const closeInstallModal = () => {
+        installModal.classList.add('hidden');
+        installModal.classList.remove('flex');
+      };
+
+      document.getElementById('BtnOpenInstallModal').addEventListener('click', openInstallModal);
+      document.getElementById('BtnCloseInstallModal').addEventListener('click', closeInstallModal);
+      document.getElementById('BtnDoneInstallModal').addEventListener('click', closeInstallModal);
+      document.getElementById('BtnTriggerNativeInstall').addEventListener('click', () => {
+        if (deferredInstallPrompt) {
+          deferredInstallPrompt.prompt();
+        }
       });
       document.getElementById('BtnExportAllCsv').addEventListener('click', exportAllArchiveToCsv);
       document.getElementById('BtnExportJson').addEventListener('click', () => {
